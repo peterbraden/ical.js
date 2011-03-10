@@ -1,0 +1,4 @@
+{'name' : 'ical',
+ 'version' : '0.0.0',
+ 'main' : 'ical.js'
+}
