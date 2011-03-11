@@ -20,7 +20,20 @@ var storeParam = function(name){
 		return curr
 	}	
 }	
-	
+
+var dateParam = function(name){
+	return function(val, params, curr){
+		storeParam(val, params, curr)
+		if (params && params[0] === "VALUE=DATE" && val.length==8)
+			curr[name] = new Date(val.substr(0,4),
+					parseInt(val.substr(4,2))-1, 
+					val.substr(6,2))
+
+		return curr
+	}	
+}	
+
+
 
 exports.objectHandlers = {
 	'BEGIN' : function(component, params, curr){
@@ -37,8 +50,8 @@ exports.objectHandlers = {
   , 'SUMMARY' : storeParam('summary')
   , 'UID' : storeParam('uid')
   , 'LOCATION' : storeParam('location')
-  , 'DTSTART' : storeParam('start')
-  , 'DTEND' : storeParam('end')
+  , 'DTSTART' : dateParam('start')
+  , 'DTEND' : dateParam('end')
 	
 }	
 
@@ -83,7 +96,7 @@ exports.parseICS = function(str){
 	  }	  
 	}
 
-	exports.handleObject(name, value, params, ctx, out, l)  
+	ctx = exports.handleObject(name, value, params, ctx, out, l) || {} 
   }	  
 
   return out
@@ -100,6 +113,5 @@ exports.fromUrl = function(url, opts, cb){
   })
 }	
 
-//exports.fromUrl('http://lanyrd.com/topics/nodejs/nodejs.ics', {}, function(err, data){console.log("OUT:", data)})
 
 
