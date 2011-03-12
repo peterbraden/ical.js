@@ -6,7 +6,7 @@
  * **************/
 
 var request = require('request')
-
+  , fs = require('fs')
 
 
 var storeParam = function(name){
@@ -113,5 +113,7 @@ exports.fromUrl = function(url, opts, cb){
   })
 }	
 
-
+exports.parseFile = function(filename){
+	return exports.parseICS(fs.readFileSync(filename, 'utf8'))
+} 
 
