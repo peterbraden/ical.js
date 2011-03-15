@@ -48,10 +48,12 @@ exports.objectHandlers = {
   }
 
   , 'SUMMARY' : storeParam('summary')
+  , 'URL' : storeParam('url')
   , 'UID' : storeParam('uid')
   , 'LOCATION' : storeParam('location')
   , 'DTSTART' : dateParam('start')
   , 'DTEND' : dateParam('end')
+  ,' CLASS' : storeParam('location')
 	
 }	
 
