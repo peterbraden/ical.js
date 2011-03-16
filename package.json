@@ -1,4 +1,12 @@
-{'name' : 'ical',
- 'version' : '0.0.2',
- 'main' : 'ical.js'
+{"name": "ical",
+ "version": "0.0.3",
+ "main": "ical.js"
+ ,"description": "A tolerant, minimal icalendar parser"
+ , "keywords": ["ical", "ics", "calendar"]
+ , "homepage": "https://github.com/peterbraden/node-ical"
+ , "author": "Peter Braden <peterbraden@peterbraden.co.uk> (peterbraden.co.uk)"
+ , "repository": {"type" : "git", "url" : "git://github.com/peterbraden/node-ical.git"}
+ , "dependencies": {
+ 	"request": ""
+ }
 }
