@@ -104,7 +104,7 @@ exports.parseICS = function(str){
   return out
 }	
 
-exports.fromUrl = function(url, opts, cb){
+exports.fromURL = function(url, opts, cb){
   if (!cb)
     return;
 	

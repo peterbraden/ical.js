@@ -34,7 +34,7 @@ vows.describe('Parsing a calendar file').addBatch({
 }).export(module)
 
 
-//ical.fromUrl('http://lanyrd.com/topics/nodejs/nodejs.ics',
+//ical.fromURL('http://lanyrd.com/topics/nodejs/nodejs.ics',
 //	{}, 
 //	function(err, data){
 //		console.log("OUT:", data)
