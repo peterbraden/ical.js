@@ -81,12 +81,15 @@ exports.parseICS = function(str){
 
 	kv = l.split(":")
 	
-	if (kv.length != 2){
+	if (kv.length < 2){
 	  // Invalid line - must have k&v
 	  continue;
 	}	
 		
-	value = kv[1]
+	// Although the spec says that vals with colons should be quote wrapped
+	// in practise nobody does, so we assume further colons are part of the 
+	// val
+	value = kv.slice(1, kv.length).join(":")
 	
 	kp = kv[0].split(";")
 	name = kp[0]
