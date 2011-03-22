@@ -37,9 +37,19 @@ vows.describe('Parsing a calendar file').addBatch({
 			, 'has a summary (invalid colon handling tolerance)' : function(topic){
 				assert.equal(topic.summary, '[Async]: Everything Express')
 			}
-		
-		
 		}	
+		, 'event d4c8' :{
+			topic : function(events){
+				return _.select(_.values(events),
+						function(x){
+							return x.uid === 'd4c826dfb701f611416d69b4df81caf9ff80b03a'})[0]		
+			}
+			, 'has a start datetime' : function(topic){
+				assert.equal(topic.start.toDateString(), new Date(2011, 3, 12, 20, 0, 0).toDateString())
+			}
+		}
+		
+			
 
     },
 }).export(module)
