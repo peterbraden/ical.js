@@ -23,24 +23,24 @@ var storeParam = function(name){
 
 var dateParam = function(name){
   return function(val, params, curr){
-  storeParam(val, params, curr)
-  if (params && params[0] === "VALUE=DATE" && val.length==8){ // Just date
-        curr[name] = new Date(Date.UTC(
-      val.substr(0,4),
-          parseInt(val.substr(4,2))-1, 
-          val.substr(6,2)
-      ))
-    } else if(val.length == 16 && val.charAt(15) == 'Z') {
-        curr[name] = new Date(Date.UTC(
+    storeParam(val, params, curr)
+    if (params && params[0] === "VALUE=DATE" && val.length==8){ // Just date
+      curr[name] = new Date(Date.UTC(
         val.substr(0,4),
-          val.substr(4,2), 
-          val.substr(6,2),
-      val.substr(9,2),
-      val.substr(11,2),
-      val.substr(13,2)
+        parseInt(val.substr(4,2))-1, 
+        val.substr(6,2)
       ))
-  }
-  return curr
+    } else if(val.length == 16 && val.charAt(15) == 'Z') { //typical RFC date-time format
+      curr[name] = new Date(Date.UTC(
+        val.substr(0,4),
+        val.substr(4,2), 
+        val.substr(6,2),
+        val.substr(9,2),
+        val.substr(11,2),
+        val.substr(13,2)
+      ))
+    }
+    return curr
   }  
 }  
 
