@@ -25,7 +25,7 @@ vows.describe('Parsing a calendar file').addBatch({
 				assert.equal(topic.location, "Fort Lauderdale, United States")
 			}
 			,'starts Tue, 29 Nov 2011' : function(topic){
-				assert.equal(topic.start.toDateString(), new Date(2011,10,29).toDateString())
+				assert.equal(topic.start.toDateString(), new Date(Date.UTC(2011,10,29)).toDateString())
 			}
 		}
 		, 'event 480a' : {
@@ -45,7 +45,7 @@ vows.describe('Parsing a calendar file').addBatch({
 							return x.uid === 'd4c826dfb701f611416d69b4df81caf9ff80b03a'})[0]		
 			}
 			, 'has a start datetime' : function(topic){
-				assert.equal(topic.start.toDateString(), new Date(2011, 3, 12, 20, 0, 0).toDateString())
+				assert.equal(topic.start.toDateString(), new Date(Date.UTC(2011, 3, 12, 20, 0, 0)).toDateString())
 			}
 		}
 		
