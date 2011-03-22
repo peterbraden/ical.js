@@ -8,55 +8,55 @@ var vows = require('vows')
 vows.describe('Parsing a calendar file').addBatch({
     'when parsing calendar file 1': {
         topic: function () {
-			return ical.parseFile('./tests/test1.ics')
-		}
+      return ical.parseFile('./tests/test1.ics')
+    }
 
-        ,'we get 8 events': function (topic) {
-			var events = _.select(_.values(topic), function(x){ return x.type==='VEVENT'})
+    ,'we get 8 events': function (topic) {
+      var events = _.select(_.values(topic), function(x){ return x.type==='VEVENT'})
             assert.equal (events.length, 8);
         }
-		,'event 47f6e' : {
-			topic: function(events){
-				return _.select(_.values(events),
-					function(x){
-						return x.uid ==='47f6ea3f28af2986a2192fa39a91fa7d60d26b76'})[0]
-			}
-			,'is in fort lauderdale' : function(topic){
-				assert.equal(topic.location, "Fort Lauderdale, United States")
-			}
-			,'starts Tue, 29 Nov 2011' : function(topic){
-				assert.equal(topic.start.toDateString(), new Date(Date.UTC(2011,10,29)).toDateString())
-			}
-		}
-		, 'event 480a' : {
-			topic: function(events){
-				return _.select(_.values(events),
-					function(x){
-						return x.uid ==='480a3ad48af5ed8965241f14920f90524f533c18'})[0]
-			}
-			, 'has a summary (invalid colon handling tolerance)' : function(topic){
-				assert.equal(topic.summary, '[Async]: Everything Express')
-			}
-		}	
-		, 'event d4c8' :{
-			topic : function(events){
-				return _.select(_.values(events),
-						function(x){
-							return x.uid === 'd4c826dfb701f611416d69b4df81caf9ff80b03a'})[0]		
-			}
-			, 'has a start datetime' : function(topic){
-				assert.equal(topic.start.toDateString(), new Date(Date.UTC(2011, 3, 12, 20, 0, 0)).toDateString())
-			}
-		}
-		
-			
+    ,'event 47f6e' : {
+      topic: function(events){
+        return _.select(_.values(events),
+          function(x){
+            return x.uid ==='47f6ea3f28af2986a2192fa39a91fa7d60d26b76'})[0]
+      }
+      ,'is in fort lauderdale' : function(topic){
+        assert.equal(topic.location, "Fort Lauderdale, United States")
+      }
+      ,'starts Tue, 29 Nov 2011' : function(topic){
+        assert.equal(topic.start.toDateString(), new Date(Date.UTC(2011,10,29)).toDateString())
+      }
+    }
+    , 'event 480a' : {
+      topic: function(events){
+        return _.select(_.values(events),
+          function(x){
+            return x.uid ==='480a3ad48af5ed8965241f14920f90524f533c18'})[0]
+      }
+      , 'has a summary (invalid colon handling tolerance)' : function(topic){
+        assert.equal(topic.summary, '[Async]: Everything Express')
+      }
+    }  
+    , 'event d4c8' :{
+      topic : function(events){
+        return _.select(_.values(events),
+            function(x){
+              return x.uid === 'd4c826dfb701f611416d69b4df81caf9ff80b03a'})[0]    
+      }
+      , 'has a start datetime' : function(topic){
+        assert.equal(topic.start.toDateString(), new Date(Date.UTC(2011, 3, 12, 20, 0, 0)).toDateString())
+      }
+    }
+    
+      
 
     },
 }).export(module)
 
 
 //ical.fromURL('http://lanyrd.com/topics/nodejs/nodejs.ics',
-//	{}, 
-//	function(err, data){
-//		console.log("OUT:", data)
-//	})
+//  {}, 
+//  function(err, data){
+//    console.log("OUT:", data)
+//  })
