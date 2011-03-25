@@ -1,12 +1,16 @@
-//var ical = require('ical')
+/****
+ * Tests
+ *
+ *
+ ***/
 var ical = require('../ical')
 
 var vows = require('vows')
   , assert = require('assert')
   , _ = require('underscore')
 
-vows.describe('Parsing a calendar file').addBatch({
-    'when parsing calendar file 1': {
+vows.describe('node-ical').addBatch({
+  'when parsing test1.ics (node conferences schedule from lanyrd.com, modified)': {
         topic: function () {
       return ical.parseFile('./tests/test1.ics')
     }
@@ -48,10 +52,20 @@ vows.describe('Parsing a calendar file').addBatch({
         assert.equal(topic.start.toDateString(), new Date(Date.UTC(2011, 3, 12, 20, 0, 0)).toDateString())
       }
     }
-    
-      
-
-    },
+  }
+  , 'with test2.ics (testing ical features)' : {
+    topic: function () {
+      return ical.parseFile('./tests/test2.ics')
+    }
+	, 'todo item uid4@host1.com' : {
+	  topic : function(items){
+	    return items['uid4@host1.com']
+	  }
+	  , 'is a VTODO' : function(topic){
+	  	assert.equal(topic.type, 'VTODO')
+	  }
+	}
+  }			   
 }).export(module)
 
 
