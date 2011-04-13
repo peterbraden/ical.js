@@ -71,7 +71,6 @@ exports.objectHandlers = {
 exports.handleObject = function(name, val, params, stack, par, line){
   if(exports.objectHandlers[name])
     return exports.objectHandlers[name](val, params, stack, par, line)
-  
   return stack    
 }  
 
