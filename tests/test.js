@@ -41,12 +41,12 @@ vows.describe('node-ical').addBatch({
       , 'has a summary (invalid colon handling tolerance)' : function(topic){
         assert.equal(topic.summary, '[Async]: Everything Express')
       }
-    }  
+    }
     , 'event d4c8' :{
       topic : function(events){
         return _.select(_.values(events),
             function(x){
-              return x.uid === 'd4c826dfb701f611416d69b4df81caf9ff80b03a'})[0]    
+              return x.uid === 'd4c826dfb701f611416d69b4df81caf9ff80b03a'})[0]
       }
       , 'has a start datetime' : function(topic){
         assert.equal(topic.start.toDateString(), new Date(Date.UTC(2011, 3, 12, 20, 0, 0)).toDateString())
@@ -57,20 +57,20 @@ vows.describe('node-ical').addBatch({
     topic: function () {
       return ical.parseFile('./tests/test2.ics')
     }
-	, 'todo item uid4@host1.com' : {
-	  topic : function(items){
-	    return items['uid4@host1.com']
-	  }
-	  , 'is a VTODO' : function(topic){
-	  	assert.equal(topic.type, 'VTODO')
-	  }
-	}
-  }			   
+  , 'todo item uid4@host1.com' : {
+    topic : function(items){
+      return items['uid4@host1.com']
+    }
+    , 'is a VTODO' : function(topic){
+      assert.equal(topic.type, 'VTODO')
+    }
+  }
+  }
 }).export(module)
 
 
 //ical.fromURL('http://lanyrd.com/topics/nodejs/nodejs.ics',
-//  {}, 
+//  {},
 //  function(err, data){
 //    console.log("OUT:", data)
 //  })
