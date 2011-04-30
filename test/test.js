@@ -49,7 +49,7 @@ vows.describe('node-ical').addBatch({
               return x.uid === 'd4c826dfb701f611416d69b4df81caf9ff80b03a'})[0]
       }
       , 'has a start datetime' : function(topic){
-        assert.equal(topic.start.toDateString(), new Date(Date.UTC(2011, 3, 12, 20, 0, 0)).toDateString())
+        assert.equal(topic.start.toDateString(), new Date(Date.UTC(2011, 2, 12, 20, 0, 0)).toDateString())
       }
     }
   }
@@ -63,6 +63,26 @@ vows.describe('node-ical').addBatch({
       }
       , 'is a VTODO' : function(topic){
         assert.equal(topic.type, 'VTODO')
+      }
+    }
+  }
+  , 'with test3.ics (testing tvcountdown.com)' : {
+    topic: function() {
+      return ical.parseFile('./test/test3.ics');
+    }
+    , 'event -83' : {
+      topic: function(events) {
+        return _.select(_.values(events), function(x) {
+          return x.uid === '20110505T220000Z-83@tvcountdown.com';
+        })[0];
+      }
+      , 'has a start datetime' : function(topic) {
+        assert.equal(topic.start.getFullYear(), 2011);
+        assert.equal(topic.start.getMonth(), 4);
+      }
+      , 'has an end datetime' : function(topic) {
+        assert.equal(topic.end.getFullYear(), 2011);
+        assert.equal(topic.end.getMonth(), 4);
       }
     }
   }
