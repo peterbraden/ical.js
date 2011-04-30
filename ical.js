@@ -76,41 +76,41 @@ exports.handleObject = function(name, val, params, stack, par, line){
 
 
 exports.parseICS = function(str){
-  var lines = str.replace(/\r/g, '').split('\n')
+  var lines = str.split(/\r?\n/)
   , kv, value, params, name, kp
   , out = {}
     , ctx = {}
 
   for (var i = 0, ii = lines.length, l = lines[0]; i<ii; i++, l=lines[i]){
     //Unfold : RFC#3.1
-    if (lines[i+1] && /\s/.test(lines[i+1][0])){
-      l += lines[i+1] // TODO - strip leading whitespace
+    while (lines[i+1] && /[ \t]/.test(lines[i+1][0])) {
+      l += lines[i+1].slice(1)
       i += 1
     }
 
-  kv = l.split(":")
+    kv = l.split(":")
 
     if (kv.length < 2){
       // Invalid line - must have k&v
       continue;
     }
 
-  // Although the spec says that vals with colons should be quote wrapped
-  // in practise nobody does, so we assume further colons are part of the
-  // val
-  value = kv.slice(1, kv.length).join(":")
+    // Although the spec says that vals with colons should be quote wrapped
+    // in practise nobody does, so we assume further colons are part of the
+    // val
+    value = kv.slice(1, kv.length).join(":")
 
-  kp = kv[0].split(";")
-  name = kp[0]
-  params = []
+    kp = kv[0].split(";")
+    name = kp[0]
+    params = []
 
-  if (kp.length > 1){
-    for (var pi = 1; pi < kp.length; pi++){
-      params.push(kp[pi]);
+    if (kp.length > 1){
+      for (var pi = 1; pi < kp.length; pi++){
+        params.push(kp[pi]);
+      }
     }
-  }
 
-  ctx = exports.handleObject(name, value, params, ctx, out, l) || {}
+    ctx = exports.handleObject(name, value, params, ctx, out, l) || {}
   }
 
   return out
