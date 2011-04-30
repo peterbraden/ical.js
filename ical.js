@@ -77,9 +77,8 @@ exports.handleObject = function(name, val, params, stack, par, line){
 
 exports.parseICS = function(str){
   var lines = str.split(/\r?\n/)
-  , kv, value, params, name, kp
-  , out = {}
-    , ctx = {}
+  var out = {}
+  var ctx = {}
 
   for (var i = 0, ii = lines.length, l = lines[0]; i<ii; i++, l=lines[i]){
     //Unfold : RFC#3.1
@@ -88,7 +87,7 @@ exports.parseICS = function(str){
       i += 1
     }
 
-    kv = l.split(":")
+    var kv = l.split(":")
 
     if (kv.length < 2){
       // Invalid line - must have k&v
@@ -98,17 +97,11 @@ exports.parseICS = function(str){
     // Although the spec says that vals with colons should be quote wrapped
     // in practise nobody does, so we assume further colons are part of the
     // val
-    value = kv.slice(1, kv.length).join(":")
+    var value = kv.slice(1).join(":")
 
-    kp = kv[0].split(";")
-    name = kp[0]
-    params = []
-
-    if (kp.length > 1){
-      for (var pi = 1; pi < kp.length; pi++){
-        params.push(kp[pi]);
-      }
-    }
+    var kp = kv[0].split(";")
+    var name = kp[0]
+    var params = kp.slice(1)
 
     ctx = exports.handleObject(name, value, params, ctx, out, l) || {}
   }
