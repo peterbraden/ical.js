@@ -12,7 +12,7 @@ var vows = require('vows')
 vows.describe('node-ical').addBatch({
   'when parsing test1.ics (node conferences schedule from lanyrd.com, modified)': {
         topic: function () {
-      return ical.parseFile('./tests/test1.ics')
+      return ical.parseFile('./test/test1.ics')
     }
 
     ,'we get 8 events': function (topic) {
@@ -55,16 +55,16 @@ vows.describe('node-ical').addBatch({
   }
   , 'with test2.ics (testing ical features)' : {
     topic: function () {
-      return ical.parseFile('./tests/test2.ics')
+      return ical.parseFile('./test/test2.ics')
     }
-  , 'todo item uid4@host1.com' : {
-    topic : function(items){
-      return items['uid4@host1.com']
+    , 'todo item uid4@host1.com' : {
+      topic : function(items){
+        return items['uid4@host1.com']
+      }
+      , 'is a VTODO' : function(topic){
+        assert.equal(topic.type, 'VTODO')
+      }
     }
-    , 'is a VTODO' : function(topic){
-      assert.equal(topic.type, 'VTODO')
-    }
-  }
   }
 }).export(module)
 
