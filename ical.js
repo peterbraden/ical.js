@@ -18,31 +18,37 @@ var storeParam = function(name){
       curr[name] = val
 
     return curr
-  }  
-}  
+  }
+}
 
 var dateParam = function(name){
   return function(val, params, curr){
     storeParam(val, params, curr)
-    if (params && params[0] === "VALUE=DATE" && val.length==8){ // Just date
-      curr[name] = new Date(Date.UTC(
-        val.substr(0,4),
-        parseInt(val.substr(4,2))-1, 
-        val.substr(6,2)
-      ))
-    } else if(val.length == 16 && val.charAt(15) == 'Z') { //typical RFC date-time format
-      curr[name] = new Date(Date.UTC(
-        val.substr(0,4),
-        val.substr(4,2), 
-        val.substr(6,2),
-        val.substr(9,2),
-        val.substr(11,2),
-        val.substr(13,2)
-      ))
+    if (params && params[0] === "VALUE=DATE") { // Just date
+      var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
+      if (comps !== null) {
+        curr[name] = new Date(Date.UTC(
+          comps[1],
+          parseInt(comps[2])-1,
+          comps[3]
+        ));
+      }
+    } else  { //typical RFC date-time format
+      var comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/.exec(val);
+      if (comps !== null) {
+        curr[name] = new Date(Date.UTC(
+          comps[1],
+          parseInt(comps[2])-1,
+          comps[3],
+          comps[4],
+          comps[5],
+          comps[6]
+        ));
+      }
     }
     return curr
-  }  
-}  
+  }
+}
 
 
 
@@ -55,7 +61,7 @@ exports.objectHandlers = {
 
   , 'END' : function(component, params, curr, par){
     if (curr.uid)
-      par[curr.uid] = curr    
+      par[curr.uid] = curr
   }
 
   , 'SUMMARY' : storeParam('summary')
@@ -65,70 +71,62 @@ exports.objectHandlers = {
   , 'DTSTART' : dateParam('start')
   , 'DTEND' : dateParam('end')
   ,' CLASS' : storeParam('location')
-  
-}  
+}
 
 exports.handleObject = function(name, val, params, stack, par, line){
   if(exports.objectHandlers[name])
     return exports.objectHandlers[name](val, params, stack, par, line)
-  return stack    
-}  
+  return stack
+}
 
 
 
 exports.parseICS = function(str){
-  var lines = str.replace(/\r/g, '').split('\n')
-  , kv, value, params, name, kp
-  , out = {}
-    , ctx = {}
+  var lines = str.split(/\r?\n/)
+  var out = {}
+  var ctx = {}
 
   for (var i = 0, ii = lines.length, l = lines[0]; i<ii; i++, l=lines[i]){
     //Unfold : RFC#3.1
-    if (lines[i+1] && /\s/.test(lines[i+1][0])){
-      l += lines[i+1] // TODO - strip leading whitespace
-      i += 1    
-    }  
-    
-	kv = l.split(":")
-  
+    while (lines[i+1] && /[ \t]/.test(lines[i+1][0])) {
+      l += lines[i+1].slice(1)
+      i += 1
+    }
+
+    var kv = l.split(":")
+
     if (kv.length < 2){
       // Invalid line - must have k&v
       continue;
-    }  
-    
-  // Although the spec says that vals with colons should be quote wrapped
-  // in practise nobody does, so we assume further colons are part of the 
-  // val
-  value = kv.slice(1, kv.length).join(":")
-  
-  kp = kv[0].split(";")
-  name = kp[0]
-  params = []
- 
-  if (kp.length > 1){
-    for (var pi = 1; pi < kp.length; pi++){
-      params.push(kp[pi]);
-    }    
+    }
+
+    // Although the spec says that vals with colons should be quote wrapped
+    // in practise nobody does, so we assume further colons are part of the
+    // val
+    var value = kv.slice(1).join(":")
+
+    var kp = kv[0].split(";")
+    var name = kp[0]
+    var params = kp.slice(1)
+
+    ctx = exports.handleObject(name, value, params, ctx, out, l) || {}
   }
 
-  ctx = exports.handleObject(name, value, params, ctx, out, l) || {} 
-  }    
-
   return out
-}  
+}
 
 exports.fromURL = function(url, opts, cb){
   if (!cb)
     return;
-  
+
   request({uri:url}, function(err, r, data){
     if (err)
     throw err;
-  cb(undefined, exports.parseICS(data));
+    cb(undefined, exports.parseICS(data));
   })
-}  
+}
 
 exports.parseFile = function(filename){
   return exports.parseICS(fs.readFileSync(filename, 'utf8'))
-} 
+}
 
