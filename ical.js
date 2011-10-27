@@ -120,7 +120,8 @@ exports.fromURL = function(url, opts, cb){
   if (!cb)
     return;
 
-  request({uri:url}, function(err, r, data){
+  var options = opts || {}; options.uri = url;
+  request(options, function(err, r, data){
     if (err)
     throw err;
     cb(undefined, exports.parseICS(data));
