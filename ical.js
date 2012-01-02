@@ -48,6 +48,16 @@ var dateParam = function(name){
 }
 
 
+var geoParam = function(name){
+  return function(val, params, curr){
+    storeParam(val, params, curr)
+    var parts = val.split(';');
+    curr[name] = {lat:Number(parts[0]), lon:Number(parts[1])};
+    return curr
+  }  
+}  
+
+
 
 exports.objectHandlers = {
   'BEGIN' : function(component, params, curr){
@@ -68,6 +78,8 @@ exports.objectHandlers = {
   , 'DTSTART' : dateParam('start')
   , 'DTEND' : dateParam('end')
   ,' CLASS' : storeParam('location')
+  , 'TRANSP' : storeParam('transparency')
+  , 'GEO' : geoParam('geo')
 }
 
 exports.handleObject = function(name, val, params, stack, par, line){
