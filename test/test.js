@@ -86,6 +86,51 @@ vows.describe('node-ical').addBatch({
       }
     }
   }
+  
+  , 'with test4.ics (testing tripit.com)' : {
+    topic: function() {
+      return ical.parseFile('./test/test4.ics');
+    }
+    , 'event c32a5...' : {
+      topic: function(events) {
+        return _.select(_.values(events), function(x) {
+          return x.uid === 'c32a5eaba2354bb29e012ec18da827db90550a3b@tripit.com';
+        })[0];
+      }
+      , 'has a start datetime' : function(topic) {
+        assert.equal(topic.start.getFullYear(), 2011);
+        assert.equal(topic.start.getMonth(), 09);
+        assert.equal(topic.start.getDay(), 10);// TODO
+      }
+      
+      , 'has a summary' : function(topic){
+        // escaped commas and semicolons should be replaced
+        assert.equal(topic.summary, 'South San Francisco, CA, October 2011;')
+        
+      } 
+      
+      , 'has a description' : function(topic){
+        var desired = 'John Doe is in South San Francisco, CA from Oct 11 ' + 
+         'to Oct 13, 2011\nView and/or edit details in TripIt : http://www.tripit.c' +
+         'om/trip/show/id/23710889\nTripIt - organize your travel at http://www.trip' + 
+         'it.com\n'
+        assert.equal(topic.description, desired) 
+      
+      }
+      
+      , 'has a geolocation' : function(topic){
+        assert.ok(topic.geo, 'no geo param')
+        assert.equal(topic.geo.lat, 37.654656)
+        assert.equal(topic.geo.lon, -122.40775)
+      }   
+      
+      , 'has transparency' : function(topic){
+        assert.equal(topic.transparency, 'TRANSPARENT')
+      }
+      
+    }
+  }
+  
 }).export(module)
 
 
