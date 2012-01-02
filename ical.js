@@ -6,13 +6,24 @@
  * **************/
 
 
+// Unescape Text re RFC 4.3.11 
+var text = function(t){
+  return (t
+    .replace(/\\\,/g, ',')
+    .replace(/\\\;/g, ';')
+    .replace(/\\[nN]/g, '\n')
+    .replace(/\\\\/g, '\\')
+  )
+}  
+
+
 var storeParam = function(name){
   return function(val, params, curr){
     if (params && params.length && !(params.length==1 && params[0]==='CHARSET=utf-8')){
-      curr[name] = {params:params, val:val}
+      curr[name] = {params:params, val:text(val)}
     }
     else
-      curr[name] = val
+      curr[name] = text(val)
 
     return curr
   }
@@ -72,6 +83,7 @@ exports.objectHandlers = {
   }
 
   , 'SUMMARY' : storeParam('summary')
+  , 'DESCRIPTION' : storeParam('description')
   , 'URL' : storeParam('url')
   , 'UID' : storeParam('uid')
   , 'LOCATION' : storeParam('location')
