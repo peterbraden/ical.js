@@ -144,7 +144,8 @@ vows.describe('node-ical').addBatch({
         })[0];
       }
       , 'has a start' : function(topic){
-        assert.equal(topic.start, new Date(2011, 10, 08, 19, 00, 00))
+        assert.equal(topic.start.tz, 'America/Phoenix')
+        assert.equal(topic.start.toISOString(), new Date(2011, 10, 09, 19, 0,0).toISOString())
       }  
     }   
   }    

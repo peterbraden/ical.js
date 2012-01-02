@@ -16,6 +16,19 @@ var text = function(t){
   )
 }  
 
+var parseParams = function(p){
+  var out = {}
+  for (var i = 0; i<p.length; i++){
+    if (p[i].indexOf('=') > -1){
+      var segs = p[i].split('=')
+        , out = {}
+      if (segs.length == 2){ 
+        out[segs[0]] = segs[1]
+      }  
+    }  
+  }  
+  return out || sp
+}  
 
 var storeParam = function(name){
   return function(val, params, curr){
@@ -46,28 +59,42 @@ var dateParam = function(name){
           parseInt(comps[2])-1,
           comps[3]
         );
-        return curr
       }
       
       
     } else  { 
       
-      //typical RFC date-time GMT format
-      var comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/.exec(val);
+      //typical RFC date-time format
+      var comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/.exec(val);
       if (comps !== null) {
-        curr[name] = new Date(Date.UTC(
-          comps[1],
-          parseInt(comps[2])-1,
-          comps[3],
-          comps[4],
-          comps[5],
-          comps[6]
-        ));
-        return curr
+        if (comps[7] == 'Z'){ // GMT
+          curr[name] = new Date(Date.UTC(
+            comps[1],
+            parseInt(comps[2])-1,
+            comps[3],
+            comps[4],
+            comps[5],
+            comps[6]
+          ));
+        } else {
+          curr[name] = new Date(
+            comps[1],
+            parseInt(comps[2])-1,
+            comps[3],
+            comps[4],
+            comps[5],
+            comps[6]
+          );
+        }    
       }
     }
     
+    var p = parseParams(params);
     
+    if (params && p){
+      curr[name].tz = p.TZID
+    }  
+      
     return curr
   }
 }
