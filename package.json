@@ -1,6 +1,6 @@
 {"name": "ical",
  "version": "0.0.3",
- "main": "ical.js"
+ "main": "index.js"
  ,"description": "A tolerant, minimal icalendar parser"
  , "keywords": ["ical", "ics", "calendar"]
  , "homepage": "https://github.com/peterbraden/node-ical"

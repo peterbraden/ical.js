@@ -3,7 +3,7 @@
  *
  *
  ***/
-var ical = require('../ical')
+var ical = require('../index')
 
 var vows = require('vows')
   , assert = require('assert')

@@ -5,9 +5,6 @@
  *  <peterbraden@peterbraden.co.uk>
  * **************/
 
-var request = require('request')
-  , fs = require('fs')
-
 
 var storeParam = function(name){
   return function(val, params, curr){
@@ -113,20 +110,5 @@ exports.parseICS = function(str){
   }
 
   return out
-}
-
-exports.fromURL = function(url, opts, cb){
-  if (!cb)
-    return;
-
-  request({uri:url}, function(err, r, data){
-    if (err)
-    throw err;
-    cb(undefined, exports.parseICS(data));
-  })
-}
-
-exports.parseFile = function(filename){
-  return exports.parseICS(fs.readFileSync(filename, 'utf8'))
 }
 
