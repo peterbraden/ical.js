@@ -29,7 +29,7 @@ vows.describe('node-ical').addBatch({
         assert.equal(topic.location, "Fort Lauderdale, United States")
       }
       ,'starts Tue, 29 Nov 2011' : function(topic){
-        assert.equal(topic.start.toDateString(), new Date(Date.UTC(2011,10,29)).toDateString())
+        assert.equal(topic.start.toDateString(), new Date(2011,10,29).toDateString())
       }
     }
     , 'event 480a' : {
@@ -100,7 +100,7 @@ vows.describe('node-ical').addBatch({
       , 'has a start datetime' : function(topic) {
         assert.equal(topic.start.getFullYear(), 2011);
         assert.equal(topic.start.getMonth(), 09);
-        assert.equal(topic.start.getDay(), 10);// TODO
+        assert.equal(topic.start.getDate(), 11);
       }
       
       , 'has a summary' : function(topic){
@@ -130,6 +130,24 @@ vows.describe('node-ical').addBatch({
       
     }
   }
+  
+  
+  
+  , 'with test5.ics (testing meetup.com)' : { 
+     topic: function () {
+        return ical.parseFile('./test/test5.ics')
+      }
+    , 'event nsmxnyppbfc@meetup.com' : {
+      topic: function(events) {
+        return _.select(_.values(events), function(x) {
+          return x.uid === 'event_nsmxnyppbfc@meetup.com';
+        })[0];
+      }
+      , 'has a start' : function(topic){
+        assert.equal(topic.start, new Date(2011, 10, 08, 19, 00, 00))
+      }  
+    }   
+  }    
   
 }).export(module)
 

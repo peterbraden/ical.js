@@ -31,17 +31,28 @@ var storeParam = function(name){
 
 var dateParam = function(name){
   return function(val, params, curr){
+    
+    // Store as string - worst case scenario
     storeParam(val, params, curr)
-    if (params && params[0] === "VALUE=DATE") { // Just date
+    
+    if (params && params[0] === "VALUE=DATE") { 
+      // Just Date
+      
       var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
       if (comps !== null) {
-        curr[name] = new Date(Date.UTC(
+        // No TZ info - assume same timezone as this computer
+        curr[name] = new Date(
           comps[1],
           parseInt(comps[2])-1,
           comps[3]
-        ));
+        );
+        return curr
       }
-    } else  { //typical RFC date-time format
+      
+      
+    } else  { 
+      
+      //typical RFC date-time GMT format
       var comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/.exec(val);
       if (comps !== null) {
         curr[name] = new Date(Date.UTC(
@@ -52,8 +63,11 @@ var dateParam = function(name){
           comps[5],
           comps[6]
         ));
+        return curr
       }
     }
+    
+    
     return curr
   }
 }
