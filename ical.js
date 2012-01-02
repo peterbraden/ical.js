@@ -86,6 +86,7 @@ exports.objectHandlers = {
   , 'DESCRIPTION' : storeParam('description')
   , 'URL' : storeParam('url')
   , 'UID' : storeParam('uid')
+  , 'DESCRIPTION' : storeParam('description')
   , 'LOCATION' : storeParam('location')
   , 'DTSTART' : dateParam('start')
   , 'DTEND' : dateParam('end')
@@ -135,4 +136,3 @@ exports.parseICS = function(str){
 
   return out
 }
-
