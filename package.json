@@ -1,5 +1,5 @@
 {"name": "ical",
- "version": "0.0.4",
+ "version": "0.0.5",
  "main": "index.js"
  ,"description": "A tolerant, minimal icalendar parser"
  , "keywords": ["ical", "ics", "calendar"]
