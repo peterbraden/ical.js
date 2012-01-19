@@ -1,5 +1,7 @@
 # node-ical #
 
+[![Build Status](https://secure.travis-ci.org/peterbraden/node-ical.png)](http://travis-ci.org/peterbraden/node-ical)
+
 A tolerant, minimal icalendar parser
 (http://tools.ietf.org/html/rfc5545)
 
