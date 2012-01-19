@@ -9,4 +9,7 @@
  , "dependencies": {
  	"request": ""
  }
+ , "scripts": {
+   "test": "node test/test.js"
+   }
 }
