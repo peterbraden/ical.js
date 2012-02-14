@@ -109,6 +109,18 @@ var geoParam = function(name){
   }  
 }  
 
+var generateTextParam = function(icsName){
+  return function(val){
+    return icsName + ";CHARSET=utf-8:" + val; //TODO - handle non strings
+  }  
+}
+
+var generateRawParam = function(icsName){
+  return function(val){
+    return icsName + ":" + val; //TODO - handle non strings
+  }  
+}
+
 
 
 
@@ -116,10 +128,10 @@ var geoParam = function(name){
 
 var params = {
   // <ICS PARAM NAME> : [<json key>, <store generator>, <generate generator>]
-    'SUMMARY' : ['summary', storeParam]
-  , 'DESCRIPTION' : ['description', storeParam]
-  , 'URL' : ['url', storeParam]
-  , 'UID' : ['uid', storeParam]
+    'SUMMARY' : ['summary', storeParam, generateTextParam]
+  , 'DESCRIPTION' : ['description', storeParam, generateTextParam]
+  , 'URL' : ['url', storeParam, generateRawParam]
+  , 'UID' : ['uid', storeParam, generateRawParam]
   , 'LOCATION' : ['location', storeParam]
   , 'DTSTART' : ['start', dateParam]
   , 'DTEND' : ['end', dateParam]
@@ -196,26 +208,43 @@ exports.parseICS = function(str){
 }
 
  
+exports.objectGenerators = {}
 
+// Append params handlers to objectGenerators
+for (var ic in params){
+  if (params[ic][2])
+    exports.objectGenerators[params[ic][0]] = params[ic][2](ic)
+}
+
+  
 
 exports.generateComponent = function(ob, type){
   
-  
-  
+  if (exports.objectGenerators[type]){
+    return exports.objectGenerators[type](ob)
+  }  
+  return ""
 }  
 
 // Does the opposite of parseICS - generate ICS data from json
 exports.generateICS = function(data){
   var out = ""
   
-  if (!data instanceof Array){
+  if (!(data instanceof Array)){
     data = [data]
   }  
   
   for (var i =0; i< data.length; i++){
-    var component = data[i];
-    out += exports.generateComponent (component, component.type || 'VEVENT');
+    var component = data[i]
+      , t = component.type ? component.type : 'VEVENT'
+      
+    out += "BEGIN:" + t + '\n'
+    for (var k in component){
+      out += exports.generateComponent(component[k], k) + '\n'; // TODO Wrap
+    } 
+    out += "END:" + t + '\n'
+    
   }  
-  
+
   return out
 }  
