@@ -127,11 +127,10 @@ exports.objectHandlers = {
   , 'DESCRIPTION' : storeParam('description')
   , 'URL' : storeParam('url')
   , 'UID' : storeParam('uid')
-  , 'DESCRIPTION' : storeParam('description')
   , 'LOCATION' : storeParam('location')
   , 'DTSTART' : dateParam('start')
   , 'DTEND' : dateParam('end')
-  ,' CLASS' : storeParam('location')
+  ,' CLASS' : storeParam('class')
   , 'TRANSP' : storeParam('transparency')
   , 'GEO' : geoParam('geo')
 }
@@ -167,10 +166,9 @@ exports.parseICS = function(str){
     // in practise nobody does, so we assume further colons are part of the
     // val
     var value = kv.slice(1).join(":")
-
-    var kp = kv[0].split(";")
-    var name = kp[0]
-    var params = kp.slice(1)
+      , kp = kv[0].split(";")
+      , name = kp[0]
+      , params = kp.slice(1)
 
     ctx = exports.handleObject(name, value, params, ctx, out, l) || {}
   }
