@@ -42,12 +42,23 @@ var storeParam = function(name){
   }
 }
 
+var addTZ = function(dt, name, params){
+  var p = parseParams(params);
+  
+  if (params && p){
+    dt[name].tz = p.TZID
+  }  
+  
+  return dt 
+}  
+
+
 var dateParam = function(name){
   return function(val, params, curr){
     
     // Store as string - worst case scenario
     storeParam(name)(val, undefined, curr)
-    
+        
     if (params && params[0] === "VALUE=DATE") { 
       // Just Date
       
@@ -56,46 +67,41 @@ var dateParam = function(name){
         // No TZ info - assume same timezone as this computer
         curr[name] = new Date(
           comps[1],
-          parseInt(comps[2])-1,
+          parseInt(comps[2], 10)-1,
           comps[3]
         );
-      }
+        
+        return addTZ(curr, name, params);
+      } 
+    }   
       
-      
-    } else  { 
-      
-      //typical RFC date-time format
-      var comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/.exec(val);
-      if (comps !== null) {
-        if (comps[7] == 'Z'){ // GMT
-          curr[name] = new Date(Date.UTC(
-            comps[1],
-            parseInt(comps[2])-1,
-            comps[3],
-            comps[4],
-            comps[5],
-            comps[6]
-          ));
-        } else {
-          curr[name] = new Date(
-            comps[1],
-            parseInt(comps[2])-1,
-            comps[3],
-            comps[4],
-            comps[5],
-            comps[6]
-          );
-        }    
-      }
+
+    //typical RFC date-time format
+    var comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/.exec(val);
+    if (comps !== null) {
+      if (comps[7] == 'Z'){ // GMT
+        curr[name] = new Date(Date.UTC(
+          parseInt(comps[1], 10),
+          parseInt(comps[2], 10)-1,
+          parseInt(comps[3], 10),
+          parseInt(comps[4], 10),
+          parseInt(comps[5], 10),
+          parseInt(comps[6], 10 )
+        ));
+        // TODO add tz
+      } else {
+        curr[name] = new Date(
+          parseInt(comps[1], 10),
+          parseInt(comps[2], 10)-1,
+          parseInt(comps[3], 10),
+          parseInt(comps[4], 10),
+          parseInt(comps[5], 10),
+          parseInt(comps[6], 10)
+        );
+      }    
     }
-    
-    var p = parseParams(params);
-    
-    if (params && p){
-      curr[name].tz = p.TZID
-    }  
-      
-    return curr
+
+    return addTZ(curr, name, params)
   }
 }
 
@@ -121,6 +127,8 @@ exports.objectHandlers = {
   , 'END' : function(component, params, curr, par){
     if (curr.uid)
       par[curr.uid] = curr
+    else
+      par[Math.random()*100000] = curr  // Randomly assign ID : TODO - use true GUID
   }
 
   , 'SUMMARY' : storeParam('summary')
