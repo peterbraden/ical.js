@@ -46,7 +46,7 @@ var dateParam = function(name){
   return function(val, params, curr){
     
     // Store as string - worst case scenario
-    storeParam(val, params, curr)
+    storeParam(name)(val, undefined, curr)
     
     if (params && params[0] === "VALUE=DATE") { 
       // Just Date

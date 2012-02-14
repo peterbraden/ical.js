@@ -15,9 +15,9 @@ vows.describe('node-ical').addBatch({
       return ical.parseFile('./test/test1.ics')
     }
 
-    ,'we get 8 events': function (topic) {
+    ,'we get 9 events': function (topic) {
       var events = _.select(_.values(topic), function(x){ return x.type==='VEVENT'})
-            assert.equal (events.length, 8);
+            assert.equal (events.length, 9);
         }
     ,'event 47f6e' : {
       topic: function(events){
@@ -52,6 +52,17 @@ vows.describe('node-ical').addBatch({
         assert.equal(topic.start.toDateString(), new Date(Date.UTC(2011, 2, 12, 20, 0, 0)).toDateString())
       }
     }
+    
+    , 'event sdfkf09fsd0 (Invalid Date)' :{
+      topic : function(events){
+        return _.select(_.values(events),
+            function(x){
+              return x.uid === 'sdfkf09fsd0'})[0]
+      }
+       , 'has a start datetime' : function(topic){
+          assert.equal(topic.start, "Next Year")
+        }
+    }  
   }
   , 'with test2.ics (testing ical features)' : {
     topic: function () {
@@ -149,7 +160,6 @@ vows.describe('node-ical').addBatch({
       }  
     }   
   }    
-  
 }).export(module)
 
 
