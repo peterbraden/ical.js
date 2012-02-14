@@ -1,4 +1,5 @@
-# node-ical #
+# ical.js #
+(Formerly node-ical)
 
 [![Build Status](https://secure.travis-ci.org/peterbraden/node-ical.png)](http://travis-ci.org/peterbraden/node-ical)
 
