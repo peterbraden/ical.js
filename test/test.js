@@ -19,6 +19,7 @@ vows.describe('node-ical').addBatch({
       var events = _.select(_.values(topic), function(x){ return x.type==='VEVENT'})
             assert.equal (events.length, 9);
         }
+        
     ,'event 47f6e' : {
       topic: function(events){
         return _.select(_.values(events),
@@ -161,7 +162,21 @@ vows.describe('node-ical').addBatch({
     }   
   }    
   
-  
+  , 'with test6.ics (testing assembly.org)' : { 
+     topic: function () {
+        return ical.parseFile('./test/test6.ics')
+      }
+    , 'event with no ID' : {
+      topic: function(events) {
+        return _.select(_.values(events), function(x) {
+          return x.summary === 'foobar Summer 2011 starts!';
+        })[0];
+      }
+      , 'has a start' : function(topic){
+        assert.equal(topic.start.toISOString(), new Date(2011, 07, 04, 12, 0,0).toISOString())
+      }  
+    }   
+  }  
   , 'generates ical (Smoke test)' : {
     topic : function(){
       return ical.generateICS({"foobar@test.com" : {
@@ -207,9 +222,6 @@ vows.describe('node-ical').addBatch({
     }  
   
   }  
-   
-   
-   
    
 }).export(module)
 
