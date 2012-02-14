@@ -111,6 +111,27 @@ var geoParam = function(name){
 
 
 
+
+
+
+var params = {
+  // <ICS PARAM NAME> : [<json key>, <store generator>, <generate generator>]
+    'SUMMARY' : ['summary', storeParam]
+  , 'DESCRIPTION' : ['description', storeParam]
+  , 'URL' : ['url', storeParam]
+  , 'UID' : ['uid', storeParam]
+  , 'LOCATION' : ['location', storeParam]
+  , 'DTSTART' : ['start', dateParam]
+  , 'DTEND' : ['end', dateParam]
+  ,' CLASS' : ['class', storeParam]
+  , 'TRANSP' : ['transparency', storeParam]
+  , 'GEO' : ['geo', geoParam]
+}  
+
+
+
+
+
 exports.objectHandlers = {
   'BEGIN' : function(component, params, curr){
       if (component === 'VCALENDAR')
@@ -122,19 +143,15 @@ exports.objectHandlers = {
     if (curr.uid)
       par[curr.uid] = curr
   }
-
-  , 'SUMMARY' : storeParam('summary')
-  , 'DESCRIPTION' : storeParam('description')
-  , 'URL' : storeParam('url')
-  , 'UID' : storeParam('uid')
-  , 'DESCRIPTION' : storeParam('description')
-  , 'LOCATION' : storeParam('location')
-  , 'DTSTART' : dateParam('start')
-  , 'DTEND' : dateParam('end')
-  ,' CLASS' : storeParam('location')
-  , 'TRANSP' : storeParam('transparency')
-  , 'GEO' : geoParam('geo')
 }
+
+// Append params handlers to objectHandlers
+for (var ic in params){
+  exports.objectHandlers[ic] = params[ic][1](params[ic][0])
+}
+  
+
+
 
 exports.handleObject = function(name, val, params, stack, par, line){
   if(exports.objectHandlers[name])
@@ -177,3 +194,28 @@ exports.parseICS = function(str){
 
   return out
 }
+
+ 
+
+
+exports.generateComponent = function(ob, type){
+  
+  
+  
+}  
+
+// Does the opposite of parseICS - generate ICS data from json
+exports.generateICS = function(data){
+  var out = ""
+  
+  if (!data instanceof Array){
+    data = [data]
+  }  
+  
+  for (var i =0; i< data.length; i++){
+    var component = data[i];
+    out += exports.generateComponent (component, component.type || 'VEVENT');
+  }  
+  
+  return out
+}  

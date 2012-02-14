@@ -160,6 +160,20 @@ vows.describe('node-ical').addBatch({
       }  
     }   
   }    
+  
+  
+  , 'generates ical (Smoke test)' : {
+    topic : function(){
+      return ical.generateICS({
+        uid : "foobar@test.com"
+      })  
+    }
+    
+    , 'has a UID' : function(topic){
+      assert.notEqual(topic.indexOf('UID:foobar@test.com'), -1)
+    }  
+    
+  }  
 }).export(module)
 
 
