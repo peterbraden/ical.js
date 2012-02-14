@@ -164,16 +164,53 @@ vows.describe('node-ical').addBatch({
   
   , 'generates ical (Smoke test)' : {
     topic : function(){
-      return ical.generateICS({
-        uid : "foobar@test.com"
-      })  
+      return ical.generateICS({"foobar@test.com" : {
+          uid : "foobar@test.com"
+        , summary: 'Foo Bar'
+        , location: "Baz"
+        , start: new Date(2011, 05, 18)
+      }})  
     }
     
     , 'has a UID' : function(topic){
       assert.notEqual(topic.indexOf('UID:foobar@test.com'), -1)
     }  
+    , 'has a summary' : function(topic){
+      assert.notEqual(topic.indexOf('SUMMARY;CHARSET=utf-8:Foo Bar'), -1)
+    }
+    , 'has a location' : function(topic){
+      assert.notEqual(topic.indexOf('LOCATION;CHARSET=utf-8:Baz'), -1)
+    }
+    
+    , 'has a start' : function(topic){
+      assert.notEqual(topic.indexOf('DTSTART;VALUE=DATE:20110618'), -1)
+    }
     
   }  
+  
+  
+  , 'parse then generate returns the same data' : {
+    topic : function(){
+      return require('fs').readFileSync('./test/test1.ics', 'utf8')
+    }  
+    
+    , "parses equals parses generate" : function(topic){
+      var parsed = ical.parseICS(topic)
+        , generate = ical.generateICS(parsed)
+      
+      assert.deepEqual(parsed['25169a7b1ba5c248278f47120a40878055dc8c15'],
+        ical.parseICS(generate)['25169a7b1ba5c248278f47120a40878055dc8c15']);
+     
+      //assert.deepEqual(parsed,
+      //  ical.parseICS(generate));
+      
+    }  
+  
+  }  
+   
+   
+   
+   
 }).export(module)
 
 

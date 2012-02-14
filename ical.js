@@ -16,6 +16,15 @@ var text = function(t){
   )
 }  
 
+var pad = function(v, len, chr){
+  var out = v + ''
+  
+  for (var i = 0, ii = len - out.length; i<ii; i++){
+    out = chr + out
+  }  
+  return out
+}  
+
 var parseParams = function(p){
   var out = {}
   for (var i = 0; i<p.length; i++){
@@ -102,7 +111,7 @@ var dateParam = function(name){
 
 var geoParam = function(name){
   return function(val, params, curr){
-    storeParam(val, params, curr)
+    storeParam(name)(val, params, curr)
     var parts = val.split(';');
     curr[name] = {lat:Number(parts[0]), lon:Number(parts[1])};
     return curr
@@ -121,6 +130,19 @@ var generateRawParam = function(icsName){
   }  
 }
 
+var generateDateParam = function(icsName){
+  return function(val){
+    if (val instanceof Date){
+      return icsName + ";VALUE=DATE:" + val.getFullYear() +
+         pad(val.getMonth()+1, 2, '0') +
+         pad(val.getDate(), 2, '0'); // TODO handle time
+    } else {
+      return icsName + ";VALUE=DATE:" + val
+    }       
+  }  
+}
+
+
 
 
 
@@ -132,11 +154,11 @@ var params = {
   , 'DESCRIPTION' : ['description', storeParam, generateTextParam]
   , 'URL' : ['url', storeParam, generateRawParam]
   , 'UID' : ['uid', storeParam, generateRawParam]
-  , 'LOCATION' : ['location', storeParam]
-  , 'DTSTART' : ['start', dateParam]
-  , 'DTEND' : ['end', dateParam]
-  ,' CLASS' : ['class', storeParam]
-  , 'TRANSP' : ['transparency', storeParam]
+  , 'LOCATION' : ['location', storeParam, generateTextParam]
+  , 'DTSTART' : ['start', dateParam, generateDateParam]
+  , 'DTEND' : ['end', dateParam, generateDateParam]
+  ,' CLASS' : ['class', storeParam, generateRawParam]
+  , 'TRANSP' : ['transparency', storeParam, generateRawParam]
   , 'GEO' : ['geo', geoParam]
 }  
 
@@ -221,7 +243,7 @@ for (var ic in params){
 exports.generateComponent = function(ob, type){
   
   if (exports.objectGenerators[type]){
-    return exports.objectGenerators[type](ob)
+    return exports.objectGenerators[type](ob) + '\n'
   }  
   return ""
 }  
@@ -230,21 +252,16 @@ exports.generateComponent = function(ob, type){
 exports.generateICS = function(data){
   var out = ""
   
-  if (!(data instanceof Array)){
-    data = [data]
-  }  
-  
-  for (var i =0; i< data.length; i++){
+  for (var i in data){
     var component = data[i]
       , t = component.type ? component.type : 'VEVENT'
       
     out += "BEGIN:" + t + '\n'
     for (var k in component){
-      out += exports.generateComponent(component[k], k) + '\n'; // TODO Wrap
+      out += exports.generateComponent(component[k], k); // TODO Wrap
     } 
     out += "END:" + t + '\n'
     
   }  
-
   return out
 }  
