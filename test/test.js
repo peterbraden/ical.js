@@ -65,6 +65,28 @@ vows.describe('node-ical').addBatch({
         }
     }  
   }
+  
+  , 'when parsing test1-short.ics ': {
+      topic: function () {
+        return ical.parseFile('./test/test1-short.ics')
+      }
+      
+      , 'deep equal to json' : function(topic){
+        assert.deepEqual(topic, {
+          'd4c826dfb701f611416d69b4df81caf9ff80b03a': {
+             start: new Date('Sat, 12 Mar 2011 20:00:00 GMT'),
+             uid: 'd4c826dfb701f611416d69b4df81caf9ff80b03a',
+             summary: 'Dyncon 2011',
+             end: new Date('Mon, 14 Mar 2011 07:00:00 GMT'),
+             type: 'VEVENT',
+             params: [],
+             location: 'Stockholm, Sweden',
+             url: 'http://lanyrd.com/2011/dyncon/'
+           }
+        })
+      }
+    }
+    
   , 'with test2.ics (testing ical features)' : {
     topic: function () {
       return ical.parseFile('./test/test2.ics')
@@ -220,16 +242,22 @@ vows.describe('node-ical').addBatch({
           assert.deepEqual(parsed['25169a7b1ba5c248278f47120a40878055dc8c15'],
             ical.parseICS(generate)['25169a7b1ba5c248278f47120a40878055dc8c15']);
         }
-        /*
+        
+      }  
+      
+      , "parses equals parses generate #1 - short" : {
+        topic : function(){
+          return require('fs').readFileSync('./test/test1-short.ics', 'utf8')
+        }
+        
         , "Deep equal cal" : function(topic){
           var parsed = ical.parseICS(topic)
             , generate = ical.generateICS(parsed)
           
           assert.deepEqual(parsed,
             ical.parseICS(generate));
-        }*/
-            
-      }  
+        }
+      }
       
       
       , "parses equals parses generate #2" : {

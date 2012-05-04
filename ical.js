@@ -194,16 +194,20 @@ var params = {
 
 exports.objectHandlers = {
   'BEGIN' : function(component, params, curr){
-      if (component === 'VCALENDAR')
+      if (component === 'VCALENDAR'){
         return curr;
+      }
       return {type:component, params:params}
     }
 
   , 'END' : function(component, params, curr, par){
+    if (component == 'VCALENDAR')
+      return;
     if (curr.uid)
       par[curr.uid] = curr
-    else
+    else{
       par[Math.random()*100000] = curr  // Randomly assign ID : TODO - use true GUID
+    }  
   }
 }
 
