@@ -96,6 +96,10 @@ vows.describe('node-ical').addBatch({
         assert.equal(topic.end.getFullYear(), 2011);
         assert.equal(topic.end.getMonth(), 4);
       }
+      
+      , 'has a url' : function(topic) {
+        assert.deepEqual(topic.url, {val:'', params: [ 'VALUE=URI' ]});
+      }
     }
   }
   
@@ -205,21 +209,57 @@ vows.describe('node-ical').addBatch({
   
   
   , 'parse then generate returns the same data' : {
-    topic : function(){
-      return require('fs').readFileSync('./test/test1.ics', 'utf8')
-    }  
-    
-    , "parses equals parses generate" : function(topic){
-      var parsed = ical.parseICS(topic)
-        , generate = ical.generateICS(parsed)
+      "parses equals parses generate #1" : {
+        topic : function(){
+          return require('fs').readFileSync('./test/test1.ics', 'utf8')
+        }
+        , "event 25169a7b1" : function(topic){
+          var parsed = ical.parseICS(topic)
+            , generate = ical.generateICS(parsed)
       
-      assert.deepEqual(parsed['25169a7b1ba5c248278f47120a40878055dc8c15'],
-        ical.parseICS(generate)['25169a7b1ba5c248278f47120a40878055dc8c15']);
-     
-      //assert.deepEqual(parsed,
-      //  ical.parseICS(generate));
+          assert.deepEqual(parsed['25169a7b1ba5c248278f47120a40878055dc8c15'],
+            ical.parseICS(generate)['25169a7b1ba5c248278f47120a40878055dc8c15']);
+        }
+        /*
+        , "Deep equal cal" : function(topic){
+          var parsed = ical.parseICS(topic)
+            , generate = ical.generateICS(parsed)
+          
+          assert.deepEqual(parsed,
+            ical.parseICS(generate));
+        }*/
+            
+      }  
       
-    }  
+      
+      , "parses equals parses generate #2" : {
+          topic : function(){
+            return require('fs').readFileSync('./test/test2.ics', 'utf8')
+          }
+          , "event 003065F99D04" : function(topic){
+            var parsed = ical.parseICS(topic)
+              , generate = ical.generateICS(parsed)
+
+            assert.deepEqual(parsed['EC944331-FF65-11D6-9973-003065F99D04'],
+              ical.parseICS(generate)['EC944331-FF65-11D6-9973-003065F99D04']);
+          }
+        }
+  
+  
+      , "parses equals parses generate #3" : {
+          topic : function(){
+            return require('fs').readFileSync('./test/test3.ics', 'utf8')
+          }
+          , "event 003065F99D04" : function(topic){
+            var parsed = ical.parseICS(topic)
+              , generate = ical.generateICS(parsed)
+
+            assert.deepEqual(parsed['20110519T200000Z-79@tvcountdown.com'],
+              ical.parseICS(generate)['20110519T200000Z-79@tvcountdown.com']);
+          }
+        }
+  
+  
   
   }  
    

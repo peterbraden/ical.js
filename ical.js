@@ -132,16 +132,36 @@ var generateTextParam = function(icsName){
 
 var generateRawParam = function(icsName){
   return function(val){
-    return icsName + ":" + val; //TODO - handle non strings
+    if (Object.prototype.toString.call(val) == '[object String]'){
+      return icsName + ":" + val;
+    } else{
+      var params = (val.params.length ? ';' : '') + val.params.join(';') 
+      return icsName  + params +':' + (val.val || '') 
+    }
   }  
 }
 
 var generateDateParam = function(icsName){
   return function(val){
     if (val instanceof Date){
-      return icsName + ";VALUE=DATE:" + val.getFullYear() +
+      var tzout = ';VALUE=DATE:'
+      if (val.tz){
+        tzout = ';TZID=' + val.tz + ':'
+      }
+      
+      var d = icsName + tzout + val.getFullYear() +
          pad(val.getMonth()+1, 2, '0') +
-         pad(val.getDate(), 2, '0'); // TODO handle time
+         pad(val.getDate(), 2, '0');
+         
+      if (true){// TODO Only if time 
+         d += ('T' 
+             + pad(val.getHours(), 2, '0')
+             + pad(val.getMinutes(), 2, '0')
+             + pad(val.getSeconds(), 2, '0')
+           )
+      }   
+      return d
+         
     } else {
       return icsName + ";VALUE=DATE:" + val
     }       
