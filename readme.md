@@ -31,6 +31,7 @@ Parses a string with an ICS File
 ## Example 1 - Print list of upcoming node conferences (see example.js)
 
     var ical = require('ical')
+  , months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
     ical.fromURL('http://lanyrd.com/topics/nodejs/nodejs.ics', {}, function(err, data) {
       for (var k in data){
