@@ -3,9 +3,9 @@
  "main": "index.js"
  ,"description": "A tolerant, minimal icalendar parser"
  , "keywords": ["ical", "ics", "calendar"]
- , "homepage": "https://github.com/peterbraden/node-ical"
+ , "homepage": "https://github.com/peterbraden/ical.js"
  , "author": "Peter Braden <peterbraden@peterbraden.co.uk> (peterbraden.co.uk)"
- , "repository": {"type" : "git", "url" : "git://github.com/peterbraden/node-ical.git"}
+ , "repository": {"type" : "git", "url" : "git://github.com/peterbraden/ical.js.git"}
  , "dependencies": {
  	"request": ""
  }
