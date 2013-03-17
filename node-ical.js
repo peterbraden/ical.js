@@ -8,7 +8,7 @@ exports.fromURL = function(url, opts, cb){
 
   request({uri:url}, function(err, r, data){
     if (err)
-    throw err;
+      return cb(err, null);
     cb(undefined, ical.parseICS(data));
   })
 }

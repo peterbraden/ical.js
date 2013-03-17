@@ -177,6 +177,14 @@ vows.describe('node-ical').addBatch({
       }  
     }   
   }
+  , 'url request errors' : {
+    topic : function () {
+      ical.fromURL('http://not.exist/', {}, this.callback);
+    }
+    , 'are passed back to the callback' : function (err, result) {
+      assert.instanceOf(err, Error);
+    }
+  }
 }).export(module)
 
 
