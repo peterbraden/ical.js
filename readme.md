@@ -29,7 +29,7 @@ Parses a string with an ICS File
 
 
 ## Example 1 - Print list of upcoming node conferences (see example.js)
-
+```javascript
     var ical = require('ical')
   , months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -45,6 +45,4 @@ Parses a string with an ICS File
         }
       }
     });
-
-
-
+```
