@@ -176,6 +176,19 @@ vows.describe('node-ical').addBatch({
         assert.equal(topic.start.toISOString(), new Date(2011, 07, 04, 12, 0,0).toISOString())
       }  
     }   
+  , 'event with rrule' :{
+      topic: function(events){
+        return _.select(_.values(events), function(x){
+          return x.summary == "foobarTV broadcast starts"
+        })[0];
+      }
+      , "Has an RRULE": function(topic){
+        assert.notEqual(topic.rrule, undefined);
+      }
+      , "RRule text": function(topic){
+        assert.equal(topic.rrule.toText(), "every 5 weeks on Monday, Friday until January 30, 2013")
+      }
+    }
   }
   , 'url request errors' : {
     topic : function () {
