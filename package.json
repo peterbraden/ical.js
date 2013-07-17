@@ -8,7 +8,7 @@
  , "repository": {"type" : "git", "url" : "git://github.com/peterbraden/ical.js.git"}
  , "dependencies": {
  	"request": ""
-  ,	"rrule": "1.0.1"
+  ,	"rrule": "2.0.0"
  }
  , "devDependencies": {
  	  "vows" : "0.7.0"
