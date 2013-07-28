@@ -19,7 +19,7 @@ vows.describe('node-ical').addBatch({
       var events = _.select(_.values(topic), function(x){ return x.type==='VEVENT'})
             assert.equal (events.length, 9);
         }
-        
+
     ,'event 47f6e' : {
       topic: function(events){
         return _.select(_.values(events),
@@ -53,7 +53,7 @@ vows.describe('node-ical').addBatch({
         assert.equal(topic.start.toDateString(), new Date(Date.UTC(2011, 2, 12, 20, 0, 0)).toDateString())
       }
     }
-    
+
     , 'event sdfkf09fsd0 (Invalid Date)' :{
       topic : function(events){
         return _.select(_.values(events),
@@ -63,7 +63,7 @@ vows.describe('node-ical').addBatch({
        , 'has a start datetime' : function(topic){
           assert.equal(topic.start, "Next Year")
         }
-    }  
+    }
   }
   , 'with test2.ics (testing ical features)' : {
     topic: function () {
@@ -98,7 +98,7 @@ vows.describe('node-ical').addBatch({
       }
     }
   }
-  
+
   , 'with test4.ics (testing tripit.com)' : {
     topic: function() {
       return ical.parseFile('./test/test4.ics');
@@ -114,38 +114,38 @@ vows.describe('node-ical').addBatch({
         assert.equal(topic.start.getMonth(), 09);
         assert.equal(topic.start.getDate(), 11);
       }
-      
+
       , 'has a summary' : function(topic){
         // escaped commas and semicolons should be replaced
         assert.equal(topic.summary, 'South San Francisco, CA, October 2011;')
-        
-      } 
-      
-      , 'has a description' : function(topic){
-        var desired = 'John Doe is in South San Francisco, CA from Oct 11 ' + 
-         'to Oct 13, 2011\nView and/or edit details in TripIt : http://www.tripit.c' +
-         'om/trip/show/id/23710889\nTripIt - organize your travel at http://www.trip' + 
-         'it.com\n'
-        assert.equal(topic.description, desired) 
-      
+
       }
-      
+
+      , 'has a description' : function(topic){
+        var desired = 'John Doe is in South San Francisco, CA from Oct 11 ' +
+         'to Oct 13, 2011\nView and/or edit details in TripIt : http://www.tripit.c' +
+         'om/trip/show/id/23710889\nTripIt - organize your travel at http://www.trip' +
+         'it.com\n'
+        assert.equal(topic.description, desired)
+
+      }
+
       , 'has a geolocation' : function(topic){
         assert.ok(topic.geo, 'no geo param')
         assert.equal(topic.geo.lat, 37.654656)
         assert.equal(topic.geo.lon, -122.40775)
-      }   
-      
+      }
+
       , 'has transparency' : function(topic){
         assert.equal(topic.transparency, 'TRANSPARENT')
       }
-      
+
     }
   }
-  
-  
-  
-  , 'with test5.ics (testing meetup.com)' : { 
+
+
+
+  , 'with test5.ics (testing meetup.com)' : {
      topic: function () {
         return ical.parseFile('./test/test5.ics')
       }
@@ -158,11 +158,11 @@ vows.describe('node-ical').addBatch({
       , 'has a start' : function(topic){
         assert.equal(topic.start.tz, 'America/Phoenix')
         assert.equal(topic.start.toISOString(), new Date(2011, 10, 09, 19, 0,0).toISOString())
-      }  
-    }   
-  }    
-  
-  , 'with test6.ics (testing assembly.org)' : { 
+      }
+    }
+  }
+
+  , 'with test6.ics (testing assembly.org)' : {
      topic: function () {
         return ical.parseFile('./test/test6.ics')
       }
@@ -174,8 +174,8 @@ vows.describe('node-ical').addBatch({
       }
       , 'has a start' : function(topic){
         assert.equal(topic.start.toISOString(), new Date(2011, 07, 04, 12, 0,0).toISOString())
-      }  
-    }   
+      }
+    }
   , 'event with rrule' :{
       topic: function(events){
         return _.select(_.values(events), function(x){
@@ -188,6 +188,26 @@ vows.describe('node-ical').addBatch({
       , "RRule text": function(topic){
         assert.equal(topic.rrule.toText(), "every 5 weeks on Monday, Friday until January 30, 2013")
       }
+    }
+  }
+  , "with test7.ics (testing dtstart of rrule)" :{
+    topic: function() {
+        return ical.parseFile('./test/test7.ics')
+    },
+    'recurring yearly event (14 july)': {
+        topic: function(events){
+            var ev = _.values(events)[0];
+            /**
+             * Workaround overwrites the rrule start date
+             * ev.rrule.origOptions.dtstart = ev.start;
+             * ev.rrule = ev.rrule.clone();
+             */
+
+            return ev.rrule.between(new Date(2013, 0, 1), new Date(2014, 0, 1));
+        },
+        'dt start well set': function(topic) {
+            assert.equal(topic[0].toDateString(), new Date(2013, 6, 14).toDateString());
+        }
     }
   }
   , 'url request errors' : {
