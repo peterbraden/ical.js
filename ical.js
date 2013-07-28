@@ -6,7 +6,7 @@
  * **************/
 
 
-// Unescape Text re RFC 4.3.11 
+// Unescape Text re RFC 4.3.11
 var text = function(t){
   return (t
     .replace(/\\\,/g, ',')
@@ -14,7 +14,7 @@ var text = function(t){
     .replace(/\\[nN]/g, '\n')
     .replace(/\\\\/g, '\\')
   )
-}  
+}
 
 var parseParams = function(p){
   var out = {}
@@ -22,13 +22,13 @@ var parseParams = function(p){
     if (p[i].indexOf('=') > -1){
       var segs = p[i].split('=')
         , out = {}
-      if (segs.length == 2){ 
+      if (segs.length == 2){
         out[segs[0]] = segs[1]
-      }  
-    }  
-  }  
+      }
+    }
+  }
   return out || sp
-}  
+}
 
 var storeParam = function(name){
   return function(val, params, curr){
@@ -44,24 +44,24 @@ var storeParam = function(name){
 
 var addTZ = function(dt, name, params){
   var p = parseParams(params);
-  
+
   if (params && p){
     dt[name].tz = p.TZID
-  }  
-  
-  return dt 
-}  
+  }
+
+  return dt
+}
 
 
 var dateParam = function(name){
   return function(val, params, curr){
-    
+
     // Store as string - worst case scenario
     storeParam(name)(val, undefined, curr)
-        
-    if (params && params[0] === "VALUE=DATE") { 
+
+    if (params && params[0] === "VALUE=DATE") {
       // Just Date
-      
+
       var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
       if (comps !== null) {
         // No TZ info - assume same timezone as this computer
@@ -70,11 +70,11 @@ var dateParam = function(name){
           parseInt(comps[2], 10)-1,
           comps[3]
         );
-        
+
         return addTZ(curr, name, params);
-      } 
-    }   
-      
+      }
+    }
+
 
     //typical RFC date-time format
     var comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/.exec(val);
@@ -98,7 +98,7 @@ var dateParam = function(name){
           parseInt(comps[5], 10),
           parseInt(comps[6], 10)
         );
-      }    
+      }
     }
 
     return addTZ(curr, name, params)
@@ -112,8 +112,8 @@ var geoParam = function(name){
     var parts = val.split(';');
     curr[name] = {lat:Number(parts[0]), lon:Number(parts[1])};
     return curr
-  }  
-}  
+  }
+}
 
 
 
@@ -141,6 +141,8 @@ exports.objectHandlers = {
   ,' CLASS' : storeParam('class')
   , 'TRANSP' : storeParam('transparency')
   , 'GEO' : geoParam('geo')
+  , 'PERCENT-COMPLETE': storeParam('completion')
+  , 'COMPLETED': dateParam('completed')
 }
 
 exports.handleObject = function(name, val, params, stack, par, line){

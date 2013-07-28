@@ -190,6 +190,34 @@ vows.describe('node-ical').addBatch({
       }
     }
   }
+  , "with test 8.ics (VTODO completion)": {
+    topic: function() {
+        return ical.parseFile('./test/test8.ics');
+    },
+    'grabbing VTODO task': {
+        topic: function(topic) {
+            return _.values(topic)[0];
+        },
+        'task completed': function(task){
+            assert.equal(task.completion, 100);
+            assert.equal(task.completed.toISOString(), new Date(2013, 06, 16, 10, 57, 45).toISOString());
+        }
+    }
+  }
+  , "with test 8.ics (VTODO completion)": {
+    topic: function() {
+        return ical.parseFile('./test/test8.ics');
+    },
+    'grabbing VTODO task': {
+        topic: function(topic) {
+            return _.values(topic)[0];
+        },
+        'task completed': function(task){
+            assert.equal(task.completion, 100);
+            assert.equal(task.completed.toISOString(), new Date(2013, 06, 16, 10, 57, 45).toISOString());
+        }
+    }
+  }
   , 'url request errors' : {
     topic : function () {
       ical.fromURL('http://not.exist/', {}, this.callback);
