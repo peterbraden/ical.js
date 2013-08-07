@@ -71,9 +71,10 @@ var dateParam = function(name){
         curr[name] = new Date(
           comps[1],
           parseInt(comps[2], 10)-1,
-          comps[3],
-          tz
+          comps[3]
         );
+        if (tz)
+            curr[name].setTimezone(tz,true);
 
         return curr;
         //return addTZ(curr, name, params);
