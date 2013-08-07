@@ -59,22 +59,20 @@ var dateParam = function(name){
     // Store as string - worst case scenario
     storeParam(name)(val, undefined, curr)
 
+    var p = parseParams(params);
+    var tz = (params && p) ? p.TZID : null;
+
     if (params && params[0] === "VALUE=DATE") {
       // Just Date
 
       var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
       if (comps !== null) {
         // No TZ info - assume same timezone as this computer
-        var p = parseParams(params);
-
-        var tz = (params && p) ? p.TZID : 'UTC';
-        console.log(tz);
-        console.log(comps);
-
         curr[name] = new Date(
           comps[1],
           parseInt(comps[2], 10)-1,
-          comps[3]
+          comps[3],
+          tz
         );
         if (tz)
             curr[name].setTimezone(tz,true);
@@ -101,19 +99,21 @@ var dateParam = function(name){
         ));
         // TODO add tz
       } else {
-          console.log("NOT")
+        console.log(tz)
         curr[name] = new Date(
           parseInt(comps[1], 10),
           parseInt(comps[2], 10)-1,
           parseInt(comps[3], 10),
           parseInt(comps[4], 10),
           parseInt(comps[5], 10),
-          parseInt(comps[6], 10)
+          parseInt(comps[6], 10),
+          tz
         );
       }
     }
 
-    return addTZ(curr, name, params)
+      return curr;
+      //return addTZ(curr, name, params);
   }
 }
 
