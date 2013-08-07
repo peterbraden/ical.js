@@ -68,6 +68,9 @@ var dateParam = function(name){
         var p = parseParams(params);
 
         var tz = (params && p) ? p.TZID : 'UTC';
+        console.log(tz);
+        console.log(comps);
+
         curr[name] = new Date(
           comps[1],
           parseInt(comps[2], 10)-1,
