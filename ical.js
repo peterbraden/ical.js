@@ -46,7 +46,8 @@ var addTZ = function(dt, name, params){
   var p = parseParams(params);
 
   if (params && p){
-    dt[name].tz = p.TZID
+    dt[name].setTimezone(p.TZID);
+    console.log(dt[name]);
   }
 
   return dt
@@ -59,9 +60,6 @@ var dateParam = function(name){
     // Store as string - worst case scenario
     storeParam(name)(val, undefined, curr)
 
-    var p = parseParams(params);
-    var tz = (params && p) ? p.TZID : null;
-
     if (params && params[0] === "VALUE=DATE") {
       // Just Date
 
@@ -71,24 +69,18 @@ var dateParam = function(name){
         curr[name] = new Date(
           comps[1],
           parseInt(comps[2], 10)-1,
-          comps[3],
-          tz
+          comps[3]
         );
-        if (tz)
-            curr[name].setTimezone(tz,true);
 
-        return curr;
-        //return addTZ(curr, name, params);
+        return addTZ(curr, name, params);
       }
     }
 
 
     //typical RFC date-time format
     var comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/.exec(val);
-    console.log(comps);
     if (comps !== null) {
       if (comps[7] == 'Z'){ // GMT
-          console.log("UTC");
         curr[name] = new Date(Date.UTC(
           parseInt(comps[1], 10),
           parseInt(comps[2], 10)-1,
@@ -99,21 +91,18 @@ var dateParam = function(name){
         ));
         // TODO add tz
       } else {
-        console.log(tz)
         curr[name] = new Date(
           parseInt(comps[1], 10),
           parseInt(comps[2], 10)-1,
           parseInt(comps[3], 10),
           parseInt(comps[4], 10),
           parseInt(comps[5], 10),
-          parseInt(comps[6], 10),
-          tz
+          parseInt(comps[6], 10)
         );
       }
     }
 
-      return curr;
-      //return addTZ(curr, name, params);
+      return addTZ(curr, name, params);
   }
 }
 
