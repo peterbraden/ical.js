@@ -4,7 +4,7 @@
  *
  *  <peterbraden@peterbraden.co.uk>
  * **************/
-
+var time = require('time')(Date);
 
 // Unescape Text re RFC 4.3.11
 var text = function(t){
@@ -65,13 +65,18 @@ var dateParam = function(name){
       var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
       if (comps !== null) {
         // No TZ info - assume same timezone as this computer
+        var p = parseParams(params);
+
+        var tz = (params && p) ? p.TZID : 'UTC';
         curr[name] = new Date(
           comps[1],
           parseInt(comps[2], 10)-1,
-          comps[3]
+          comps[3],
+          tz
         );
 
-        return addTZ(curr, name, params);
+        return curr;
+        //return addTZ(curr, name, params);
       }
     }
 

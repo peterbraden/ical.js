@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "request": "",
+    "time":"latest",
     "rrule": "2.0.0"
   },
   "devDependencies": {
