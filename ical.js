@@ -46,10 +46,7 @@ var addTZ = function(dt, name, params){
   var p = parseParams(params);
 
   if (params && p){
-    console.log(dt[name].getTime());
     dt[name].setTimezone(p.TZID,true);
-    console.log(dt[name].getTime());
-    console.log(dt[name].getTimezone());
   }
 
   return dt
