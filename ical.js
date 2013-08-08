@@ -70,6 +70,7 @@ var dateParam = function(name){
           parseInt(comps[2], 10)-1,
           comps[3]
         );
+        curr[name].bAllDay = true;
 
         return addTZ(curr, name, params);
       }
