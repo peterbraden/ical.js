@@ -42,11 +42,11 @@ var storeParam = function(name){
   }
 }
 
-var addTZ = function(dt, name, params){
+var addTZ = function(dt, name, params, skip){
   var p = parseParams(params);
 
   if (params && p && p.TZID){
-    dt[name].setTimezone(p.TZID,true);
+    dt[name].setTimezone(p.TZID,!skip);
   }
 
   return dt
@@ -90,7 +90,7 @@ var dateParam = function(name){
           parseInt(comps[6], 10 )
         ));
         // TODO add tz
-          return curr
+          return addTZ(curr, name, params, true);
       } else {
         curr[name] = new Date(
           parseInt(comps[1], 10),
