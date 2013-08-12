@@ -81,6 +81,7 @@ var dateParam = function(name){
 
     //typical RFC date-time format
     var comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/.exec(val);
+      console.log(comps);
     if (comps !== null) {
       if (comps[7] == 'Z'){ // GMT
         curr[name] = new Date(Date.UTC(
