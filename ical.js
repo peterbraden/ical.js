@@ -4,7 +4,7 @@
  *
  *  <peterbraden@peterbraden.co.uk>
  * **************/
-
+var time = require('time')(Date);
 
 // Unescape Text re RFC 4.3.11
 var text = function(t){
@@ -42,12 +42,11 @@ var storeParam = function(name){
   }
 }
 
-var addTZ = function(dt, name, params){
+var addTZ = function(dt, name, params, skip){
   var p = parseParams(params);
 
-  if (params && p){
-    dt[name].tz = p.TZID
-  }
+  if (params && p)
+    dt[name].setTimezone(p.TZID,!skip);
 
   return dt
 }
@@ -70,6 +69,7 @@ var dateParam = function(name){
           parseInt(comps[2], 10)-1,
           comps[3]
         );
+        curr[name].bAllDay = true;
 
         return addTZ(curr, name, params);
       }
@@ -101,7 +101,7 @@ var dateParam = function(name){
       }
     }
 
-    return addTZ(curr, name, params)
+    return addTZ(curr, name, params, (comps[7] == 'Z'));
   }
 }
 
