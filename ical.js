@@ -90,6 +90,7 @@ var dateParam = function(name){
           parseInt(comps[6], 10 )
         ));
         // TODO add tz
+          return curr
       } else {
         curr[name] = new Date(
           parseInt(comps[1], 10),
