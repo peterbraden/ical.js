@@ -18,14 +18,14 @@ exports.parseFile = function(filename){
 }
 
 
-var rrule = require('rrule').RRule;
+var RRule = require('rrule').RRule;
 
 ical.objectHandlers['RRULE'] = function(val, params, curr, par, line){
 
   var hOpts = RRule.parseString(line.replace("RRULE:", ""));
   console.log(hOpts);
 
-  var instance = new rrule(hOpts,true);
+  var instance = new RRule(hOpts,true);
 
   console.log(instance);
 
