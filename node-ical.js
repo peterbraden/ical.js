@@ -19,20 +19,18 @@ exports.parseFile = function(filename){
 
 
 var RRule = require('rrule').RRule;
+var hInstances = {};
 
 ical.objectHandlers['RRULE'] = function(val, params, curr, par, line){
-
-  var hOpts = RRule.parseString(line.replace("RRULE:", ""));
-  var instance = new RRule(hOpts);
-    console.log('val');
-    console.log(val);
-    console.log('params');
-    console.log(params);
-    console.log('curr');
-    console.log(curr);
-    console.log('par');
-    console.log(par);
-
-  curr['rrule'] = instance.all();
+  if (par) {
+      var id;
+      for (var sID in par) {
+          id = sID;
+      }
+      if (id) {
+          hInstances[id] = new RRule(RRule.parseString(line.replace("RRULE:", "")));
+          curr['rrule'] = hInstances[id].all();
+      }
+  }
   return curr
 }
