@@ -17,7 +17,7 @@ exports.parseFile = function(filename){
   return ical.parseICS(fs.readFileSync(filename, 'utf8'))
 }
 
-var rrule = require('rrule').RRule(null,false);
+var rrule = require('rrule').RRule({},false);
 
 ical.objectHandlers['RRULE'] = function(val, params, curr, par, line){
 
