@@ -17,9 +17,10 @@ exports.parseFile = function(filename){
   return ical.parseICS(fs.readFileSync(filename, 'utf8'))
 }
 
+var rrule = require('rrule').RRule(null,false);
 
 ical.objectHandlers['RRULE'] = function(val, params, curr, par, line){
-  var rrule = require('rrule').RRule
+
   curr['rrule'] = rrule.fromString(line.replace("RRULE:", ""));
   return curr
 }
