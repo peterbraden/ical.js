@@ -23,7 +23,10 @@ var RRule = require('rrule').RRule;
 ical.objectHandlers['RRULE'] = function(val, params, curr, par, line){
 
   var hOpts = RRule.parseString(line.replace("RRULE:", ""));
-  var instance = new RRule(hOpts,true);
+  var instance = new RRule(hOpts);
+    console.log(val);
+    console.log(params);
+    console.log(curr);
 
   curr['rrule'] = instance.all();
   return curr
