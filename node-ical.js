@@ -23,7 +23,7 @@ var rrule = require('rrule').RRule;
 ical.objectHandlers['RRULE'] = function(val, params, curr, par, line){
   if (rrule._cache)
     rrule._cache.all = [];
-  console.log(rrule._cache.all);
+
   curr['rrule'] = rrule.fromString(line.replace("RRULE:", ""));
   return curr
 }
