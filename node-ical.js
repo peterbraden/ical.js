@@ -24,9 +24,14 @@ ical.objectHandlers['RRULE'] = function(val, params, curr, par, line){
 
   var hOpts = RRule.parseString(line.replace("RRULE:", ""));
   var instance = new RRule(hOpts);
+    console.log('val');
     console.log(val);
+    console.log('params');
     console.log(params);
+    console.log('curr');
     console.log(curr);
+    console.log('par');
+    console.log(par);
 
   curr['rrule'] = instance.all();
   return curr
