@@ -204,6 +204,19 @@ vows.describe('node-ical').addBatch({
         }
     }
   }
+  , "with test 9.ics (VEVENT with VALARM)": {
+    topic: function() {
+        return ical.parseFile('./test/test9.ics');
+    },
+    'grabbing VEVENT task': {
+        topic: function(topic) {
+            return _.values(topic)[0];
+        },
+        'task completed': function(task){
+            assert.equal(task.summary, "Event with an alarm");
+        }
+    }
+  }
   , 'url request errors' : {
     topic : function () {
       ical.fromURL('http://not.exist/', {}, this.callback);

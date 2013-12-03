@@ -20,7 +20,7 @@ exports.parseFile = function(filename){
 
 var rrule = require('rrule').RRule
 
-ical.objectHandlers['RRULE'] = function(val, params, curr, par, line){
+ical.objectHandlers['RRULE'] = function(val, params, curr, stack, line){
   curr['rrule'] = rrule.fromString(line.replace("RRULE:", ""));
   return curr
 }

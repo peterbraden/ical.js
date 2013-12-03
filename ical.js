@@ -130,17 +130,24 @@
 
 
     objectHandlers : {
-      'BEGIN' : function(component, params, curr){
-          if (component === 'VCALENDAR')
-            return curr;
+      'BEGIN' : function(component, params, curr, stack){
+          stack.push(curr)
+
           return {type:component, params:params}
         }
 
-      , 'END' : function(component, params, curr, par){
+      , 'END' : function(component, params, curr, stack){
+        // prevents the need to search the root of the tree for the VCALENDAR object
+        if (component === "VCALENDAR") return curr
+
+        var par = stack.pop()
+
         if (curr.uid)
           par[curr.uid] = curr
         else
           par[Math.random()*100000] = curr  // Randomly assign ID : TODO - use true GUID
+
+        return par
       }
 
       , 'SUMMARY' : storeParam('summary')
@@ -158,20 +165,21 @@
     },
 
 
-    handleObject : function(name, val, params, stack, par, line){
+    handleObject : function(name, val, params, ctx, stack, line){
       var self = this
 
       if(self.objectHandlers[name])
-        return self.objectHandlers[name](val, params, stack, par, line)
-      return stack
+        return self.objectHandlers[name](val, params, ctx, stack, line)
+
+      return ctx
     },
 
 
     parseICS : function(str){
       var self = this
       var lines = str.split(/\r?\n/)
-      var out = {}
       var ctx = {}
+      var stack = []
 
       for (var i = 0, ii = lines.length, l = lines[0]; i<ii; i++, l=lines[i]){
         //Unfold : RFC#3.1
@@ -195,10 +203,14 @@
           , name = kp[0]
           , params = kp.slice(1)
 
-        ctx = self.handleObject(name, value, params, ctx, out, l) || {}
+        ctx = self.handleObject(name, value, params, ctx, stack, l) || {}
       }
 
-      return out
+       // type and params are added to the list of items, get rid of them.
+       delete ctx.type
+       delete ctx.params
+
+       return ctx
     }
 
   }
