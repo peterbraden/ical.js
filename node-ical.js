@@ -5,8 +5,7 @@ var ical = require('./ical')
 exports.fromURL = function(url, opts, cb){
   if (!cb)
     return;
-
-  request({uri:url}, function(err, r, data){
+  request(url, opts, function(err, r, data){
     if (err)
       return cb(err, null);
     cb(undefined, ical.parseICS(data));
