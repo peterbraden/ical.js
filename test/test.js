@@ -223,29 +223,31 @@ vows.describe('node-ical').addBatch({
       return ical.parseFile('./test/test10.ics');
     },
 
-    'when category present': {
+    'when categories present': {
       topic: function (t) {return _.values(t)[0]},
 
       'should be a list': function (e) {
-        assert(e.category instanceof [].constructor, 'Event category should be a list.');
+        assert(e.categories instanceof [].constructor, 'Event categories should be a list.');
       },
 
       'should contain individual category values': function (e) {
-        assert.deepEqual(e.category, ['cat1', 'cat2', 'cat3'], 'Event category should contain individual category values');
+        assert.deepEqual(e.categories, ['cat1', 'cat2', 'cat3'], 'Event categories should contain individual category values');
       }
-    }
-  },
-
-  'with test11.ics': {
-    topic: function () {
-      return ical.parseFile('./test/test11.ics');
     },
 
-    'when category present, but empty': {
-      topic: function (t) {return _.values(t)[0]},
+    'when categories present with trailing whitespace': {
+      topic: function (t) {return _.values(t)[1]},
+
+      'should contain individual category values without whitespace': function (e) {
+        assert.deepEqual(e.categories, ['cat1', 'cat2', 'cat3'], 'Event categories should contain individual category values without whitespace');
+      }
+    },
+
+    'when categories present but empty': {
+      topic: function (t) {return _.values(t)[2]},
 
       'should be an empty list': function (e) {
-        assert.deepEqual(e.category, [], 'Event category should be an empty list');
+        assert.deepEqual(e.categories, [], 'Event categories should be an empty list');
       }
     }
   },

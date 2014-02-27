@@ -1,8 +1,20 @@
 BEGIN:VCALENDAR
 BEGIN:VEVENT
-UID:eb9e1bd2-ceba-499f-be77-f02773954c72
+UID:1
 SUMMARY:Event with a category
 DESCRIPTION:Details for an event with a category
-CATEGORY:cat1,cat2,cat3
+CATEGORIES:cat1,cat2,cat3
+END:VEVENT
+BEGIN:VEVENT
+UID:2
+SUMMARY:Event with a category
+DESCRIPTION:Details for an event with a category
+CATEGORIES:cat1  ,  cat2,   cat3
+END:VEVENT
+BEGIN:VEVENT
+UID:3
+SUMMARY:Event with a category
+DESCRIPTION:Details for an event with a category
+CATEGORIES:
 END:VEVENT
 END:VCALENDAR
