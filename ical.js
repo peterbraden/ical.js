@@ -126,6 +126,15 @@
     }
   }
 
+  var categoriesParam = function (name) {
+    var separatorPattern = /\s*,\s*/g;
+    return function (val, params, curr) {
+      storeParam(val, params, curr)
+      curr[name] = val ? val.split(separatorPattern) : []
+      return curr
+    }
+  }
+
   return {
 
 
@@ -162,6 +171,7 @@
       , 'GEO' : geoParam('geo')
       , 'PERCENT-COMPLETE': storeParam('completion')
       , 'COMPLETED': dateParam('completed')
+      , 'CATEGORIES': categoriesParam('categories')
     },
 
 

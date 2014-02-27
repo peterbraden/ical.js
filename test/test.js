@@ -216,8 +216,51 @@ vows.describe('node-ical').addBatch({
             assert.equal(task.summary, "Event with an alarm");
         }
     }
-  }
-  , 'url request errors' : {
+  },
+
+  'with test10.ics': {
+    topic: function () {
+      return ical.parseFile('./test/test10.ics');
+    },
+
+    'when categories present': {
+      topic: function (t) {return _.values(t)[0]},
+
+      'should be a list': function (e) {
+        assert(e.categories instanceof [].constructor);
+      },
+
+      'should contain individual category values': function (e) {
+        assert.deepEqual(e.categories, ['cat1', 'cat2', 'cat3']);
+      }
+    },
+
+    'when categories present with trailing whitespace': {
+      topic: function (t) {return _.values(t)[1]},
+
+      'should contain individual category values without whitespace': function (e) {
+        assert.deepEqual(e.categories, ['cat1', 'cat2', 'cat3']);
+      }
+    },
+
+    'when categories present but empty': {
+      topic: function (t) {return _.values(t)[2]},
+
+      'should be an empty list': function (e) {
+        assert.deepEqual(e.categories, []);
+      }
+    },
+
+    'when categories present but singular': {
+      topic: function (t) {return _.values(t)[3]},
+
+      'should be a list of single item': function (e) {
+        assert.deepEqual(e.categories, ['lonely-cat']);
+      }
+    }
+  },
+
+  'url request errors' : {
     topic : function () {
       ical.fromURL('http://not.exist/', {}, this.callback);
     }
