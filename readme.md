@@ -1,7 +1,7 @@
 # ical.js #
 (Formerly node-ical)
 
-[![Build Status](https://secure.travis-ci.org/peterbraden/node-ical.png)](http://travis-ci.org/peterbraden/node-ical)
+[![Build Status](https://travis-ci.org/peterbraden/ical.js.png)](https://travis-ci.org/peterbraden/ical.js)
 
 A tolerant, minimal icalendar parser for javascript/node
 (http://tools.ietf.org/html/rfc5545)
