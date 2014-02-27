@@ -227,11 +227,11 @@ vows.describe('node-ical').addBatch({
       topic: function (t) {return _.values(t)[0]},
 
       'should be a list': function (e) {
-        assert(e.categories instanceof [].constructor, 'Event categories should be a list.');
+        assert(e.categories instanceof [].constructor);
       },
 
       'should contain individual category values': function (e) {
-        assert.deepEqual(e.categories, ['cat1', 'cat2', 'cat3'], 'Event categories should contain individual category values');
+        assert.deepEqual(e.categories, ['cat1', 'cat2', 'cat3']);
       }
     },
 
@@ -239,7 +239,7 @@ vows.describe('node-ical').addBatch({
       topic: function (t) {return _.values(t)[1]},
 
       'should contain individual category values without whitespace': function (e) {
-        assert.deepEqual(e.categories, ['cat1', 'cat2', 'cat3'], 'Event categories should contain individual category values without whitespace');
+        assert.deepEqual(e.categories, ['cat1', 'cat2', 'cat3']);
       }
     },
 
@@ -247,7 +247,15 @@ vows.describe('node-ical').addBatch({
       topic: function (t) {return _.values(t)[2]},
 
       'should be an empty list': function (e) {
-        assert.deepEqual(e.categories, [], 'Event categories should be an empty list');
+        assert.deepEqual(e.categories, []);
+      }
+    },
+
+    'when categories present but singular': {
+      topic: function (t) {return _.values(t)[3]},
+
+      'should be a list of single item': function (e) {
+        assert.deepEqual(e.categories, ['lonely-cat']);
       }
     }
   },

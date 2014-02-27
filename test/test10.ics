@@ -17,4 +17,10 @@ SUMMARY:Event with a category
 DESCRIPTION:Details for an event with a category
 CATEGORIES:
 END:VEVENT
+BEGIN:VEVENT
+UID:4
+SUMMARY:Event with a category
+DESCRIPTION:Details for an event with a category
+CATEGORIES:lonely-cat
+END:VEVENT
 END:VCALENDAR
