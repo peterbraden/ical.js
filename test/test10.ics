@@ -1,0 +1,26 @@
+BEGIN:VCALENDAR
+BEGIN:VEVENT
+UID:1
+SUMMARY:Event with a category
+DESCRIPTION:Details for an event with a category
+CATEGORIES:cat1,cat2,cat3
+END:VEVENT
+BEGIN:VEVENT
+UID:2
+SUMMARY:Event with a category
+DESCRIPTION:Details for an event with a category
+CATEGORIES:cat1  ,  cat2,   cat3
+END:VEVENT
+BEGIN:VEVENT
+UID:3
+SUMMARY:Event with a category
+DESCRIPTION:Details for an event with a category
+CATEGORIES:
+END:VEVENT
+BEGIN:VEVENT
+UID:4
+SUMMARY:Event with a category
+DESCRIPTION:Details for an event with a category
+CATEGORIES:lonely-cat
+END:VEVENT
+END:VCALENDAR
