@@ -217,6 +217,16 @@ vows.describe('node-ical').addBatch({
         }
     }
   }
+  , 'with test 10.ics (VEVENT with custom properties)': {
+      topic: function() {
+          return ical.parseFile('./test10.ics');
+      },
+      'grabbing custom properties': {
+          topic: function(topic) {
+              
+          }
+      }
+  }
   , 'url request errors' : {
     topic : function () {
       ical.fromURL('http://not.exist/', {}, this.callback);

@@ -170,7 +170,12 @@
 
       if(self.objectHandlers[name])
         return self.objectHandlers[name](val, params, ctx, stack, line)
-
+      //handling custom properties
+      else if(name.match(/X\-[A-Za-z0-9]+/)) {
+          //trimming the leading and perform storeParam
+          name = name.substring(2);
+          return (storeParam(name))(val, params, ctx, stack, line);
+      }
       return ctx
     },
 
