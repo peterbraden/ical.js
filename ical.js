@@ -31,24 +31,50 @@
     var out = {}
     for (var i = 0; i<p.length; i++){
       if (p[i].indexOf('=') > -1){
-        var segs = p[i].split('=')
-          , out = {}
-        if (segs.length == 2){
-          out[segs[0]] = segs[1]
-        }
+        var segs = p[i].split('=');
+        
+        out[segs[0]] = parseValue(segs.slice(1).join('='));
+        
       }
     }
     return out || sp
   }
 
+  var parseValue = function(val){
+    if ('TRUE' === val)
+      return true;
+    
+    if ('FALSE' === val)
+      return false;
+
+    var number = Number(val);
+    if (!isNaN(number))
+      return number;
+
+    return val;
+  }
+
   var storeParam = function(name){
     return function(val, params, curr){
+      var data;
       if (params && params.length && !(params.length==1 && params[0]==='CHARSET=utf-8')){
-        curr[name] = {params:params, val:text(val)}
+        data = {params:parseParams(params), val:text(val)}
       }
       else
-        curr[name] = text(val)
+        data = text(val)
 
+      var current = curr[name];
+      if (Array.isArray(current)){
+        current.push(data);
+        return cur;
+      }
+
+      if (current != null){
+        curr[name] = [current, data];
+        return curr;
+      }
+
+      curr[name] = data;
       return curr
     }
   }
