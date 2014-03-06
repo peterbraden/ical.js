@@ -166,11 +166,10 @@
         
         var par = stack.pop()
 
-        if (curr.uid)
-          par[curr.uid] = curr
-        else
-          par[Math.random()*100000] = curr  // Randomly assign ID : TODO - use true GUID
-
+        if (par[curr.type] == null)
+          par[curr.type] = [];
+        
+        par[curr.type].push(curr);
         return par
       }
 
