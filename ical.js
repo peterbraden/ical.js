@@ -147,8 +147,23 @@
 
       , 'END' : function(component, params, curr, stack){
         // prevents the need to search the root of the tree for the VCALENDAR object
-        if (component === "VCALENDAR") return curr
-
+        if (component === "VCALENDAR") {
+            //scan all high level object in curr and drop all strings
+            var key,
+                obj;
+            
+            for (key in curr) {
+                if(curr.hasOwnProperty(key)) {
+                   obj = curr[key];
+                   if (typeof obj === 'string') {
+                       delete curr[key];
+                   }
+                }
+            }
+            
+            return curr
+        }
+        
         var par = stack.pop()
 
         if (curr.uid)
@@ -181,7 +196,7 @@
       if(self.objectHandlers[name])
         return self.objectHandlers[name](val, params, ctx, stack, line)
       //handling custom properties
-      else if(name.match(/X\-[A-Za-z0-9\-]+/)) {
+      else if(name.match(/X\-[A-Za-z0-9\-]+/) && stack.length > 0) {
           //trimming the leading and perform storeParam
           name = name.substring(2);
           return (storeParam(name))(val, params, ctx, stack, line);
