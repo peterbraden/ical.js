@@ -216,6 +216,16 @@ vows.describe('node-ical').addBatch({
             assert.equal(task.summary, "Event with an alarm");
         }
     }
+  }
+  , 'with test 11.ics (VEVENT with custom properties)': {
+      topic: function() {
+          return ical.parseFile('./test10.ics');
+      },
+      'grabbing custom properties': {
+          topic: function(topic) {
+              
+          }
+      }
   },
 
   'with test10.ics': {
