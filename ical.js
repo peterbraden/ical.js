@@ -165,11 +165,19 @@
         }
         
         var par = stack.pop()
-
-        if (par[curr.type] == null)
-          par[curr.type] = [];
         
-        par[curr.type].push(curr);
+        // @deprecated, nodes will be stored in the lowercased `type` array
+        if (curr.uid)
+          par[curr.uid] = curr
+        else
+          par[Math.random()*100000] = curr  // Randomly assign ID : TODO - use true GUID
+        // <
+        
+        var type = curr.type.toLowerCase();
+        if (par[type] == null)
+          par[type] = [];
+        
+        par[type].push(curr);
         return par
       }
 
