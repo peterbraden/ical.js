@@ -77,6 +77,40 @@ vows.describe('node-ical').addBatch({
         assert.equal(topic.type, 'VTODO')
       }
     }
+    , 'vfreebusy' : {
+      topic: function(events) {
+        return _.select(_.values(events), function(x) {
+          return x.type === 'VFREEBUSY';
+        })[0];
+      }
+      , 'has a URL' : function(topic) {
+        assert.equal(topic.url, 'http://www.host.com/calendar/busytime/jsmith.ifb');
+      }
+    }
+    , 'vfreebusy first freebusy' : {
+      topic: function(events) {
+        return _.select(_.values(events), function(x) {
+          return x.type === 'VFREEBUSY';
+        })[0].freebusy[0];
+      }
+      , 'has undefined type defaulting to busy' : function(topic) {
+        assert.equal(topic.type, "BUSY");
+      }
+      , 'has an start datetime' : function(topic) {
+        assert.equal(topic.start.getFullYear(), 1998);
+        assert.equal(topic.start.getUTCMonth(), 2);
+        assert.equal(topic.start.getUTCDate(), 14);
+        assert.equal(topic.start.getUTCHours(), 23);
+        assert.equal(topic.start.getUTCMinutes(), 30);
+      }
+      , 'has an end datetime' : function(topic) {
+        assert.equal(topic.end.getFullYear(), 1998);
+        assert.equal(topic.end.getUTCMonth(), 2);
+        assert.equal(topic.end.getUTCDate(), 15);
+        assert.equal(topic.end.getUTCHours(), 00);
+        assert.equal(topic.end.getUTCMinutes(), 30);
+      }
+    }
   }
   , 'with test3.ics (testing tvcountdown.com)' : {
     topic: function() {
@@ -266,6 +300,51 @@ vows.describe('node-ical').addBatch({
 
       'should be a list of single item': function (e) {
         assert.deepEqual(e.categories, ['lonely-cat']);
+      }
+    }
+  },
+
+  'with test11.ics (testing zimbra freebusy)': {
+    topic: function () {
+      return ical.parseFile('./test/test11.ics');
+    },
+
+    'freebusy params' : {
+      topic: function(events) {
+        return _.values(events)[0];
+      }
+      , 'has a URL' : function(topic) {
+        assert.equal(topic.url, 'http://mail.example.com/yvr-2a@example.com/20140416');
+      }
+      , 'has an ORGANIZER' : function(topic) {
+        assert.equal(topic.organizer, 'mailto:yvr-2a@example.com');
+      }
+      , 'has an start datetime' : function(topic) {
+        assert.equal(topic.start.getFullYear(), 2014);
+        assert.equal(topic.start.getMonth(), 3);
+      }
+      , 'has an end datetime' : function(topic) {
+        assert.equal(topic.end.getFullYear(), 2014);
+        assert.equal(topic.end.getMonth(), 6);
+      }
+    }
+    , 'freebusy busy events' : {
+      topic: function(events) {
+        return _.select(_.values(events)[0].freebusy, function(x) {
+          return x.type === 'BUSY';
+        })[0];
+      }
+      , 'has an start datetime' : function(topic) {
+        assert.equal(topic.start.getFullYear(), 2014);
+        assert.equal(topic.start.getMonth(), 3);
+        assert.equal(topic.start.getUTCHours(), 15);
+        assert.equal(topic.start.getUTCMinutes(), 15);
+      }
+      , 'has an end datetime' : function(topic) {
+        assert.equal(topic.end.getFullYear(), 2014);
+        assert.equal(topic.end.getMonth(), 3);
+        assert.equal(topic.end.getUTCHours(), 19);
+        assert.equal(topic.end.getUTCMinutes(), 00);
       }
     }
   },
