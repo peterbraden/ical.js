@@ -135,6 +135,34 @@
     }
   }
 
+  var addFBType = function(fb, params){
+    var p = parseParams(params);
+
+    if (params && p){
+      fb.type = p.FBTYPE || "BUSY"
+    }
+
+    return fb;
+  }
+
+  var freebusyParam = function (name) {
+    return function(val, params, curr){
+      var fb = addFBType({}, params);
+      curr[name] = curr[name] || []
+      curr[name].push(fb);
+
+      storeParam(val, params, fb);
+
+      var parts = val.split('/');
+
+      ['start', 'end'].forEach(function (name, index) {
+        dateParam(name)(parts[index], params, fb);
+      });
+
+      return curr;
+    }
+  }
+
   return {
 
 
@@ -187,6 +215,7 @@
       , 'PERCENT-COMPLETE': storeParam('completion')
       , 'COMPLETED': dateParam('completed')
       , 'CATEGORIES': categoriesParam('categories')
+      , 'FREEBUSY': freebusyParam('freebusy')
     },
 
 
