@@ -32,7 +32,6 @@
     for (var i = 0; i<p.length; i++){
       if (p[i].indexOf('=') > -1){
         var segs = p[i].split('=')
-          , out = {}
         if (segs.length == 2){
           out[segs[0]] = segs[1]
         }
