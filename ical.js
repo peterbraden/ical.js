@@ -47,16 +47,16 @@ var dateParam = function(name){
   return function(val, params, curr) {
       // Store as string - worst case scenario
       storeParam(name)(val, undefined, curr)
-      console.log(val);
-      //curr[name] = moment(val);
-      if (curr[name]) {
 
-//        var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
-//        if (comps !== null) {
-//          curr[name].bAllDay = true;
-//        }
-//        return curr[name];
+      var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
+      console.log(val);
+      if (comps !== null) {
+        curr[name] = moment(comps[1],parseInt(comps[2], 10)-1,comps[3]);
+        curr[name].bAllDay = true;
+      } else {
+        curr[name] = moment(val);
       }
+      return curr[name];
   }
 }
 
