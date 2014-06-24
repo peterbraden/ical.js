@@ -4,7 +4,7 @@
  *
  *  <peterbraden@peterbraden.co.uk>
  * **************/
-var time = require('time')(Date);
+var moment = require('moment-timezone');
 
 // Unescape Text re RFC 4.3.11
 var text = function(t){
@@ -42,66 +42,17 @@ var storeParam = function(name){
   }
 }
 
-var addTZ = function(dt, name, params, skip){
-  var p = parseParams(params);
-
-  if (params && p)
-    dt[name].setTimezone(p.TZID,!skip);
-
-  return dt
-}
-
 
 var dateParam = function(name){
-  return function(val, params, curr){
-
-    // Store as string - worst case scenario
-    storeParam(name)(val, undefined, curr)
-
-    if (params && params[0] === "VALUE=DATE") {
-      // Just Date
-
+  return function(val, params, curr) {
+      // Store as string - worst case scenario
+      storeParam(name)(val, undefined, curr)
+      curr[name] = moment(val).utc().getDate();
       var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
       if (comps !== null) {
-        // No TZ info - assume same timezone as this computer
-        curr[name] = new Date(
-          comps[1],
-          parseInt(comps[2], 10)-1,
-          comps[3]
-        );
-        curr[name].bAllDay = true;
-
-        return addTZ(curr, name, params);
+          curr[name].bAllDay = true;
       }
-    }
-
-
-    //typical RFC date-time format
-    var comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/.exec(val);
-    if (comps !== null) {
-      if (comps[7] == 'Z'){ // GMT
-        curr[name] = new Date(Date.UTC(
-          parseInt(comps[1], 10),
-          parseInt(comps[2], 10)-1,
-          parseInt(comps[3], 10),
-          parseInt(comps[4], 10),
-          parseInt(comps[5], 10),
-          parseInt(comps[6], 10 )
-        ));
-        // TODO add tz
-      } else {
-        curr[name] = new Date(
-          parseInt(comps[1], 10),
-          parseInt(comps[2], 10)-1,
-          parseInt(comps[3], 10),
-          parseInt(comps[4], 10),
-          parseInt(comps[5], 10),
-          parseInt(comps[6], 10)
-        );
-      }
-    }
-
-    return addTZ(curr, name, params, (comps[7] == 'Z'));
+      return curr[name];
   }
 }
 
@@ -114,8 +65,6 @@ var geoParam = function(name){
     return curr
   }
 }
-
-
 
 exports.objectHandlers = {
   'BEGIN' : function(component, params, curr){

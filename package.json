@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "request": "",
-    "time":"0.9.2",
+    "moment-timezone":"*",
     "rrule": "2.0.0"
   },
   "devDependencies": {
