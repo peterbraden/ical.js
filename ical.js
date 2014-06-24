@@ -50,10 +50,7 @@ var dateParam = function(name){
 
       var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
       if (comps) {
-        curr[name] = moment(comps[1],parseInt(comps[2], 10)-1,comps[3]);
-
-          console.log(curr[name].toString());
-
+        curr[name] = moment(val,'YYYYMMDD');
         curr[name].bAllDay = true;
       } else if (val) {
         curr[name] = moment(val);
