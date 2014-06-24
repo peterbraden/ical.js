@@ -49,14 +49,12 @@ var dateParam = function(name){
       storeParam(name)(val, undefined, curr)
 
       var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
-      console.log(val);
       if (comps) {
         curr[name] = moment(val,'YYYYMMDD');
         curr[name].bAllDay = true;
       } else if (val) {
         curr[name] = moment(val,'YYYYMMDDTHHmmss');
       }
-      console.log(curr[name].toString());
       return curr[name];
   }
 }
