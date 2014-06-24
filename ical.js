@@ -56,9 +56,9 @@ var dateParam = function(name){
         curr[name] = moment(val,'YYYYMMDDTHHmmss');
       }
       if (curr[name])
-          console.log(curr[name].toString());
+          curr[name] = curr[name].toDate();
 
-      return (curr[name]) ? curr[name].toDate() : null;
+      return curr[name];
   }
 }
 
