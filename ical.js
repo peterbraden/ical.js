@@ -53,8 +53,9 @@ var dateParam = function(name){
         curr[name] = moment(val,'YYYYMMDD');
         curr[name].bAllDay = true;
       } else if (val) {
-        curr[name] = moment(val);
+        curr[name] = moment(val,moment.ISO_8601);
       }
+      console.log(curr[name].toString());
       return curr[name];
   }
 }
