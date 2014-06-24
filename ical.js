@@ -47,12 +47,15 @@ var dateParam = function(name){
   return function(val, params, curr) {
       // Store as string - worst case scenario
       storeParam(name)(val, undefined, curr)
-      curr[name] = moment(val).utc().getDate();
-      var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
-      if (comps !== null) {
+      curr[name] = moment(val);
+      if (curr[name]) {
+        curr[name] = moment(val).utc().getDate()
+        var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
+        if (comps !== null) {
           curr[name].bAllDay = true;
+        }
+        return curr[name];
       }
-      return curr[name];
   }
 }
 
