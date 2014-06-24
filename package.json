@@ -15,7 +15,7 @@
     "url": "git://github.com/peterbraden/ical.js.git"
   },
   "dependencies": {
-    "request": "",
+    "request": "*",
     "moment-timezone":"*",
     "rrule": "2.0.0"
   },
