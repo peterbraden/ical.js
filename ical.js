@@ -50,12 +50,12 @@ var dateParam = function(name){
 
       var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
       if (comps) {
-        curr[name] = moment(val,'YYYYMMDD');
+        curr[name] = moment(val,'YYYYMMDD').toDate();
         curr[name].bAllDay = true;
       } else if (val) {
-        curr[name] = moment(val,'YYYYMMDDTHHmmss');
+        curr[name] = moment(val,'YYYYMMDDTHHmmss').toDate();
       }
-      return (curr[name]) ? curr[name].getDate() : null;
+      return (curr[name]) ? curr[name] : null;
   }
 }
 
