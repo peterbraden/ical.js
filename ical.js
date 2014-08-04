@@ -56,11 +56,11 @@
   var addTZ = function(dateObj, params){
     var p = parseParams(params);
 
-    if (params && p){
+    if (params && p && dateObj){
       dateObj.tz = p.TZID
     }
 
-    return dateObj
+    return dateObj;
   };
 
   /**
@@ -71,7 +71,7 @@
    * @return {object} The Javascript date object
    */
   function parseDate(val, params, curr) {
-    var objToReturn = {};
+    var objToReturn = val;
 
     if (params && params[0] === "VALUE=DATE") {
       // Just Date
@@ -118,10 +118,14 @@
 
   var dateParam = function(name){
     return function(val, params, curr){
-      // Store as string - worst case scenario
-      storeParam(name)(val, undefined, curr);
       var dateObj = parseDate(val, params, curr);
-      curr[name] = addTZ(dateObj, params);
+      dateObj = addTZ(dateObj, params);
+      if (dateObj) {
+        curr[name] = dateObj;
+      } else {
+        // Store as string - worst case scenario
+        storeParam(name)(val, undefined, curr);
+      }
       return curr;
     }
   };
