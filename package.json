@@ -15,8 +15,9 @@
     "url": "git://github.com/peterbraden/ical.js.git"
   },
   "dependencies": {
+    "node-uuid": "^1.4.1",
     "request": "",
-    "rrule": "2.0.0"
+    "rrule": "2.1.0"
   },
   "devDependencies": {
     "vows": "0.7.0",

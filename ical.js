@@ -1,3 +1,5 @@
+var UUID = require('node-uuid');
+
 (function(name, definition) {
 
 /****************
@@ -219,11 +221,7 @@
         }
         
         var par = stack.pop()
-
-        if (curr.uid)
-          par[curr.uid] = curr
-        else
-          par[Math.random()*100000] = curr  // Randomly assign ID : TODO - use true GUID
+        par[UUID.v4()] = curr;
 
         return par
       }
@@ -243,6 +241,7 @@
       , 'CATEGORIES': categoriesParam('categories')
       , 'FREEBUSY': freebusyParam('freebusy')
       , 'EXDATE': dateParamArray('exdate')
+      , 'RECURRENCE-ID': storeParam('recurrenceId')
     },
 
 
