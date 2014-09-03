@@ -3,6 +3,7 @@
  *
  *
  ***/
+process.env.TZ = 'America/San_Francisco';
 var ical = require('../index')
 
 var vows = require('vows')
@@ -355,6 +356,9 @@ vows.describe('node-ical').addBatch({
     }
     , 'are passed back to the callback' : function (err, result) {
       assert.instanceOf(err, Error);
+      if (!err){
+        console.log(">E:", err, result)
+      }
     }
   }
 }).export(module)
