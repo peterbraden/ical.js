@@ -1,4 +1,4 @@
 language: node_js
 node_js:
-    - 0.6
-install: npm install --dev   
+    - 0.10.26
+install: npm install 
