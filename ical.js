@@ -116,6 +116,16 @@ var UUID = require('node-uuid');
         );
       }
     }
+
+    // date format (no time)
+    var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
+    if (comps !== null) {
+      return new Date(Date.UTC(
+        parseInt(comps[1], 10),
+        parseInt(comps[2], 10)-1,
+        parseInt(comps[3], 10)
+      ));
+    }
   }
 
   var dateParam = function(name){
