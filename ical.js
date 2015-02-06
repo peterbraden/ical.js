@@ -118,13 +118,16 @@ var UUID = require('node-uuid');
     }
 
     // date format (no time)
-    var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
+    comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
     if (comps !== null) {
-      return new Date(Date.UTC(
-        parseInt(comps[1], 10),
+      // No TZ info - assume same timezone as this computer
+      objToReturn = new Date(
+        comps[1],
         parseInt(comps[2], 10)-1,
-        parseInt(comps[3], 10)
-      ));
+        comps[3]
+      );
+
+      return addTZ(objToReturn, params);
     }
   }
 
