@@ -21,10 +21,13 @@ ical.js is availble on npm:
 
 Parses a string with an ICS File
 
+    var data = ical.parseFile(filename)
+    
+Reads in the specified iCal file, parses it and returns the parsed data
 
+    ical.fromURL(url, options, function(err, data) {} )
 
-
-
+Use the request library to fetch the specified URL (```opts``` gets passed on to the ```request()``` call), and call the function with the result (either an error or the data).
 
 
 
