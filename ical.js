@@ -66,7 +66,7 @@
       var current = curr[name];
       if (Array.isArray(current)){
         current.push(data);
-        return cur;
+        return curr;
       }
 
       if (current != null){
