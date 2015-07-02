@@ -225,6 +225,20 @@ vows.describe('node-ical').addBatch({
       }
     }
   }
+   , 'with test7.ics (testing dtstart of rrule)' :{
+    topic: function() {
+        return ical.parseFile('./test/test7.ics');
+    },
+    'recurring yearly event (14 july)': {
+        topic: function(events){
+            var ev = _.values(events)[0];
+            return ev.rrule.between(new Date(2013, 0, 1), new Date(2014, 0, 1));
+        },
+        'dt start well set': function(topic) {
+            assert.equal(topic[0].toDateString(), new Date(2013, 6, 14).toDateString());
+        }
+    }
+  }
   , "with test 8.ics (VTODO completion)": {
     topic: function() {
         return ical.parseFile('./test/test8.ics');
