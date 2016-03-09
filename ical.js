@@ -19,6 +19,7 @@
 
    // Unescape Text re RFC 4.3.11
   var text = function(t){
+    t = t || "";
     return (t
       .replace(/\\\,/g, ',')
       .replace(/\\\;/g, ';')
