@@ -1,3 +1,5 @@
+var UUID = require('node-uuid');
+
 (function(name, definition) {
 
 /****************
@@ -78,71 +80,110 @@
       curr[name] = data;
       return curr
     }
-  }
+  };
 
-  var addTZ = function(dt, name, params){
+  var addTZ = function(dateObj, params){
     var p = parseParams(params);
 
-    if (params && p){
-      dt[name].tz = p.TZID
+    if (params && p && dateObj){
+      dateObj.tz = p.TZID
     }
 
-    return dt
-  }
+    return dateObj;
+  };
 
+  /**
+   * Convert a date string from ICS format into a native Date object
+   * @param {string} val - The ICS string to be parsed
+   * @param {array} params
+   * @param {object} curr - The current Object that we're building
+   * @return {object} The Javascript date object
+   */
+  function parseDate(val, params, curr) {
+    var objToReturn = val;
+
+    if (params && params[0] === "VALUE=DATE") {
+      // Just Date
+
+      var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
+      if (comps !== null) {
+        // No TZ info - assume same timezone as this computer
+        objToReturn = new Date(
+          comps[1],
+            parseInt(comps[2], 10)-1,
+          comps[3]
+        );
+
+        return addTZ(objToReturn, params);
+      }
+    }
+
+
+    //typical RFC date-time format
+    var comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/.exec(val);
+    if (comps !== null) {
+      if (comps[7] == 'Z'){ // GMT
+        return new Date(Date.UTC(
+          parseInt(comps[1], 10),
+            parseInt(comps[2], 10)-1,
+          parseInt(comps[3], 10),
+          parseInt(comps[4], 10),
+          parseInt(comps[5], 10),
+          parseInt(comps[6], 10 )
+        ));
+        // TODO add tz
+      } else {
+        return new Date(
+          parseInt(comps[1], 10),
+            parseInt(comps[2], 10)-1,
+          parseInt(comps[3], 10),
+          parseInt(comps[4], 10),
+          parseInt(comps[5], 10),
+          parseInt(comps[6], 10)
+        );
+      }
+    }
+
+    // date format (no time)
+    comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
+    if (comps !== null) {
+      // No TZ info - assume same timezone as this computer
+      objToReturn = new Date(
+        comps[1],
+        parseInt(comps[2], 10)-1,
+        comps[3]
+      );
+
+      return addTZ(objToReturn, params);
+    }
+  }
 
   var dateParam = function(name){
     return function(val, params, curr){
-
-      // Store as string - worst case scenario
-      storeParam(name)(val, undefined, curr)
-
-      if (params && params[0] === "VALUE=DATE") {
-        // Just Date
-
-        var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
-        if (comps !== null) {
-          // No TZ info - assume same timezone as this computer
-          curr[name] = new Date(
-            comps[1],
-            parseInt(comps[2], 10)-1,
-            comps[3]
-          );
-
-          return addTZ(curr, name, params);
-        }
+      var dateObj = parseDate(val, params, curr);
+      dateObj = addTZ(dateObj, params);
+      if (dateObj) {
+        curr[name] = dateObj;
+      } else {
+        // Store as string - worst case scenario
+        storeParam(name)(val, undefined, curr);
       }
-
-
-      //typical RFC date-time format
-      var comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/.exec(val);
-      if (comps !== null) {
-        if (comps[7] == 'Z'){ // GMT
-          curr[name] = new Date(Date.UTC(
-            parseInt(comps[1], 10),
-            parseInt(comps[2], 10)-1,
-            parseInt(comps[3], 10),
-            parseInt(comps[4], 10),
-            parseInt(comps[5], 10),
-            parseInt(comps[6], 10 )
-          ));
-          // TODO add tz
-        } else {
-          curr[name] = new Date(
-            parseInt(comps[1], 10),
-            parseInt(comps[2], 10)-1,
-            parseInt(comps[3], 10),
-            parseInt(comps[4], 10),
-            parseInt(comps[5], 10),
-            parseInt(comps[6], 10)
-          );
-        }
-      }
-
-      return addTZ(curr, name, params)
+      return curr;
     }
-  }
+  };
 
+  var dateParamArray = function(name) {
+    return function(date, params, curr) {
+      // initialize
+      curr[name] = curr[name] || [];
+      // load date
+      var dateObj = parseDate(date, params, curr);
+      dateObj = addTZ(dateObj, params);
+      curr[name].push(dateObj);
+      return curr;
+    }
+
+  };
 
   var geoParam = function(name){
     return function(val, params, curr){
@@ -220,11 +261,7 @@
         }
         
         var par = stack.pop()
-
-        if (curr.uid)
-          par[curr.uid] = curr
-        else
-          par[Math.random()*100000] = curr  // Randomly assign ID : TODO - use true GUID
+        par[UUID.v4()] = curr;
 
         return par
       }
@@ -243,6 +280,8 @@
       , 'COMPLETED': dateParam('completed')
       , 'CATEGORIES': categoriesParam('categories')
       , 'FREEBUSY': freebusyParam('freebusy')
+      , 'EXDATE': dateParamArray('exdate')
+      , 'RECURRENCE-ID': storeParam('recurrenceId')
     },
 
 
