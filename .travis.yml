@@ -3,5 +3,4 @@ node_js:
     - "0.10"
     - "0.12"
     - "4.2"
-    - "5.1"
 install: npm install 
