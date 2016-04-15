@@ -316,6 +316,14 @@ vows.describe('node-ical').addBatch({
       'should be a list of single item': function (e) {
         assert.deepEqual(e.categories, ['lonely-cat']);
       }
+    },
+
+    'when categories present on multiple lines': {
+      topic: function (t) {return _.values(t)[4]},
+
+      'should contain the category values in an array': function (e) {
+        assert.deepEqual(e.categories, ['cat1', 'cat2', 'cat3']);
+      }
     }
   },
 
