@@ -157,7 +157,11 @@
     var separatorPattern = /\s*,\s*/g;
     return function (val, params, curr) {
       storeParam(val, params, curr)
-      curr[name] = val ? val.split(separatorPattern) : []
+      if (curr[name] === undefined)
+        curr[name] = val ? val.split(separatorPattern) : []
+      else
+        if (val)
+          curr[name] = curr[name].concat(val.split(separatorPattern))
       return curr
     }
   }
