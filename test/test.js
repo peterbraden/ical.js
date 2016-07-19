@@ -197,7 +197,7 @@ vows.describe('node-ical').addBatch({
     }
   }
 
-  , 'with test6.ics (testing assembly.org)' : {
+  , 'with test6.ics (testing assembly.org)': {
      topic: function () {
         return ical.parseFile('./test/test6.ics')
       }
@@ -370,9 +370,38 @@ vows.describe('node-ical').addBatch({
         assert.equal(topic.end.getUTCMinutes(), 00);
       }
     }
-  },
+  }
 
-  'url request errors' : {
+  , 'with test12.ics (testing recurrences and exdates)': {
+	topic: function () {
+		return ical.parseFile('./test/test12.ics')
+	}
+    , 'event with rrule': {
+  			topic: function (events) {
+  				return _.select(_.values(events), function (x) {
+  					return x.uid === '0000001';
+  				})[0];
+  			}
+      , "Has an RRULE": function (topic) {
+      	assert.notEqual(topic.rrule, undefined);
+      }
+      , "Has summary Treasure Hunting": function (topic) {
+      	assert.equal(topic.summary, 'Treasure Hunting');
+      }
+      , "Has two EXDATES": function (topic) {
+      	assert.notEqual(topic.exdate, undefined);
+      	assert.notEqual(topic.exdate[new Date(2015, 06, 08, 12, 0, 0).toISOString()], undefined);
+      	assert.notEqual(topic.exdate[new Date(2015, 06, 10, 12, 0, 0).toISOString()], undefined);
+      }
+      , "Has a RECURRENCE-ID override": function (topic) {
+      	assert.notEqual(topic.recurrences, undefined);
+      	assert.notEqual(topic.recurrences[new Date(2015, 06, 07, 12, 0, 0).toISOString()], undefined);
+      	assert.equal(topic.recurrences[new Date(2015, 06, 07, 12, 0, 0).toISOString()].summary, 'More Treasure Hunting');
+      }
+    }
+  }
+
+ , 'url request errors' : {
     topic : function () {
       ical.fromURL('http://not.exist/', {}, this.callback);
     }
