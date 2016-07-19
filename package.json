@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "request": "2.68.0",
-    "rrule": "2.0.0"
+    "rrule": "2.1.0"
   },
   "devDependencies": {
     "vows": "0.7.0",
