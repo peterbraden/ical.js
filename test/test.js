@@ -419,8 +419,8 @@ vows.describe('node-ical').addBatch({
       }
       , "Has a RECURRENCE-ID override": function (topic) {
       	assert.notEqual(topic.recurrences, undefined);
-      	assert.notEqual(topic.recurrences[new Date('2016-08-26T19:00:00Z').toISOString()], undefined);
-      	assert.equal(topic.recurrences[new Date('2016-08-26T19:00:00Z').toISOString()].summary, 'bla bla');
+      	assert.notEqual(topic.recurrences[new Date(2016, 7 ,26, 14, 0, 0).toISOString()], undefined);
+      	assert.equal(topic.recurrences[new Date(2016, 7, 26, 14, 0, 0).toISOString()].summary, 'bla bla');
       }
     }
   }
