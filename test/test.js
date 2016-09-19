@@ -401,9 +401,33 @@ vows.describe('node-ical').addBatch({
     }
   }
 
- , 'url request errors' : {
+  , 'with test13.ics (testing recurrence-id before rrule)': {
+  	topic: function () {
+  		return ical.parseFile('./test/test13.ics')
+  	}
+    , 'event with rrule': {
+    	topic: function (events) {
+    		return _.select(_.values(events), function (x) {
+    			return x.uid === '6m2q7kb2l02798oagemrcgm6pk@google.com';
+    		})[0];
+    	}
+      , "Has an RRULE": function (topic) {
+      	assert.notEqual(topic.rrule, undefined);
+      }
+      , "Has summary 'repeated'": function (topic) {
+      	assert.equal(topic.summary, 'repeated');
+      }
+      , "Has a RECURRENCE-ID override": function (topic) {
+      	assert.notEqual(topic.recurrences, undefined);
+      	assert.notEqual(topic.recurrences[new Date(2016, 7 ,26, 14, 0, 0).toISOString()], undefined);
+      	assert.equal(topic.recurrences[new Date(2016, 7, 26, 14, 0, 0).toISOString()].summary, 'bla bla');
+      }
+    }
+  }
+
+ , 'url request errors': {
     topic : function () {
-      ical.fromURL('http://not.exist/', {}, this.callback);
+      ical.fromURL('http://255.255.255.255/', {}, this.callback);
     }
     , 'are passed back to the callback' : function (err, result) {
       assert.instanceOf(err, Error);
