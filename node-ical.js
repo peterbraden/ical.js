@@ -1,6 +1,19 @@
 var ical = require('./ical')
   , request = require('request')
   , fs = require('fs')
+  , statusCodes = {
+    400: 'Bad Request (400)',
+    401: 'Unauthorized (401)',
+    403: 'Forbidden (403)',
+    404: 'Not Found (404)',
+    500: 'Internal Server Error (500)',
+    501: 'Not Implemented (501)',
+    502: 'Service Unavailable (502)'
+  }
+
+function getStatusMessage(statusCode) {
+  return statusCodes[statusCode] || 'Unknown (' + statusCode + ')'
+}
 
 exports.fromURL = function(url, opts, cb){
   if (!cb)
@@ -8,6 +21,8 @@ exports.fromURL = function(url, opts, cb){
   request(url, opts, function(err, r, data){
     if (err)
       return cb(err, null);
+    if (parseInt(r.statusCode) >= 400)
+      return cb(new Error(getStatusMessage(r.statusCode)));
     cb(undefined, ical.parseICS(data));
   })
 }
