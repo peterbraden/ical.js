@@ -439,6 +439,21 @@ vows.describe('node-ical').addBatch({
     }
   }
 
+  , 'with test15.ics (testing for non-stringified start/end time)': {
+  	topic: function () {
+  		return ical.parseFile('./test/test15.ics')
+  	}
+    , 'stringified params': {
+    	topic: function (events) {
+    		return _.values(events)[0];
+    	}
+      , "is not string": function (topic) {
+      	assert.notEqual(typeof topic.start, 'string');
+      	assert.notEqual(typeof topic.end, 'string');
+      }
+    }
+  }
+
  , 'url request errors': {
     topic : function () {
       ical.fromURL('http://255.255.255.255/', {}, this.callback);

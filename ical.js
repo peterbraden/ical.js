@@ -104,8 +104,7 @@ var UUID = require('node-uuid');
 
       var newDate = text(val);
 
-
-      if (params && params[0] === "VALUE=DATE") {
+      if (params && params.indexOf('VALUE=DATE') > -1) {
         // Just Date
 
         var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
