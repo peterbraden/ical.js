@@ -1,3 +1,5 @@
+var UUID = require('node-uuid');
+
 (function(name, definition) {
 
 /****************
@@ -89,7 +91,7 @@
   var addTZ = function (dt, params) {
     var p = parseParams(params);
 
-    if (params && p){
+    if (params && p && dt){
       dt.tz = p.TZID
     }
 
@@ -257,7 +259,6 @@
         }
         
         var par = stack.pop()
-
         if (curr.uid)
         {
         	// If this is the first time we run into this UID, just save it.
@@ -334,7 +335,7 @@
 
         }
         else
-          par[Math.random()*100000] = curr  // Randomly assign ID : TODO - use true GUID
+          par[UUID.v4()] = curr;
 
         return par
       }

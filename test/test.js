@@ -72,7 +72,7 @@ vows.describe('node-ical').addBatch({
     }
     , 'todo item uid4@host1.com' : {
       topic : function(items){
-        return items['uid4@host1.com']
+        return _.filter(items,function(obj) { { return obj.uid == 'uid4@host1.com'; } })[0];
       }
       , 'is a VTODO' : function(topic){
         assert.equal(topic.type, 'VTODO')
