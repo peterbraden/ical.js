@@ -2,6 +2,7 @@ Gruntfile.js
 tasks
 test
 test.js
+example.js
 .travis.yml
 .idea
 .git
