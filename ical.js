@@ -392,20 +392,18 @@
           i += 1
         }
 
-        var kv = l.split(":")
+        var exp = /([^":;]+)((?:;(?:[^":;]+)(?:=(?:(?:"[^"]*")|(?:[^":;]+))))*):(.*)/;
+        var kv = l.match(exp);
 
-        if (kv.length < 2){
+        if (kv === null) {
           // Invalid line - must have k&v
           continue;
         }
+        kv = kv.slice(1);
 
-        // Although the spec says that vals with colons should be quote wrapped
-        // in practise nobody does, so we assume further colons are part of the
-        // val
-        var value = kv.slice(1).join(":")
-          , kp = kv[0].split(";")
-          , name = kp[0]
-          , params = kp.slice(1)
+        var value = kv[kv.length - 1]
+          , name = kv[0]
+          , params = kv[1]?kv[1].split(';').slice(1):[]
 
         ctx = self.handleObject(name, value, params, ctx, stack, l) || {}
       }
