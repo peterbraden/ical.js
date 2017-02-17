@@ -425,6 +425,20 @@ vows.describe('node-ical').addBatch({
     }
   }
 
+  , 'with test14.ics (testing quoted parameter values)': {
+  	topic: function () {
+  		return ical.parseFile('./test/test14.ics')
+  	}
+    , 'quoted params': {
+    	topic: function (events) {
+    		return _.values(events)[0];
+    	}
+      , "is quoted": function (topic) {
+      	assert.notEqual(topic.start.tz, undefined);
+      }
+    }
+  }
+
  , 'url request errors': {
     topic : function () {
       ical.fromURL('http://255.255.255.255/', {}, this.callback);
