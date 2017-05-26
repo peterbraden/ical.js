@@ -40,8 +40,12 @@ ical.objectHandlers['END'] = function (val, params, curr, stack) {
 					}
 				}
 
-				rule += ';DTSTART=' + curr.start.toISOString().replace(/[-:]/g, '');
-				rule = rule.replace(/\.[0-9]{3}/, '');
+				try {
+					rule += ';DTSTART=' + curr.start.toISOString().replace(/[-:]/g, '');
+					rule = rule.replace(/\.[0-9]{3}/, '');
+                } catch (error) {
+					console.error("ERROR when trying to convert to ISOString", error);
+				}
 			}
 			curr.rrule = rrule.fromString(rule);
 		}
