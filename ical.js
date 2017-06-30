@@ -191,6 +191,8 @@
               curr[name] = curr[name] || [];
               curr[name][exdate[name].toISOString()] = exdate[name];
               return curr;
+          } else {
+              console.error("No toISOString function in exdate[name]", exdate[name]);
           }
       }
   }
@@ -326,6 +328,8 @@
 				// Save off our cloned recurrence object into the array, keyed by date.
                 if (typeof curr.recurrenceid.toISOString === 'function') {
                     par[curr.uid].recurrences[curr.recurrenceid.toISOString()] = recurrenceObj;
+                } else {
+        		    console.error("No toISOString function in curr.recurrenceid", curr.recurrenceid);
                 }
             }
 

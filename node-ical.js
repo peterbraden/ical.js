@@ -48,7 +48,9 @@ ical.objectHandlers['END'] = function (val, params, curr, stack) {
 					} catch (error) {
 						console.error("ERROR when trying to convert to ISOString", error);
 					}
-                }
+                } else {
+                    console.error("No toISOString function in curr.start", curr.start);
+				}
 			}
 			curr.rrule = rrule.fromString(rule);
 		}
