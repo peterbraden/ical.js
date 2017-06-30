@@ -187,9 +187,11 @@
       return function (val, params, curr) {
           var exdate = new Array();
           dateParam(name)(val, params, exdate);
-          curr[name] = curr[name] || [];
-          curr[name][exdate[name].toISOString()] = exdate[name];
-          return curr;
+          if (typeof exdate[name].toISOString === 'function') {
+              curr[name] = curr[name] || [];
+              curr[name][exdate[name].toISOString()] = exdate[name];
+              return curr;
+          }
       }
   }
 
@@ -322,7 +324,9 @@
             	}
 
 				// Save off our cloned recurrence object into the array, keyed by date.
-        		par[curr.uid].recurrences[curr.recurrenceid.toISOString()] = recurrenceObj;
+                if (typeof curr.recurrenceid.toISOString === 'function') {
+                    par[curr.uid].recurrences[curr.recurrenceid.toISOString()] = recurrenceObj;
+                }
             }
 
         	// One more specific fix - in the case that an RRULE entry shows up after a RECURRENCE-ID entry,
