@@ -15,7 +15,7 @@
     "url": "git://github.com/peterbraden/ical.js.git"
   },
   "dependencies": {
-    "request": "^2.81.0",
+    "phin": "^2.2.3",
     "rrule": "2.1.0"
   },
   "devDependencies": {

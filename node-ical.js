@@ -1,11 +1,13 @@
 var ical = require('./ical')
-  , request = require('request')
+  , phin = require('phin')
   , fs = require('fs')
 
 exports.fromURL = function(url, opts, cb){
   if (!cb)
     return;
-  request(url, opts, function(err, r, data){
+  phin(Object.assign({
+  	"url": url
+  }, (opts || {})), function(err, r, data){
     if (err)
       return cb(err, null);
     cb(undefined, ical.parseICS(data));
