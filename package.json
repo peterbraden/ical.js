@@ -10,6 +10,7 @@
   ],
   "homepage": "https://github.com/peterbraden/ical.js",
   "author": "Peter Braden <peterbraden@peterbraden.co.uk> (peterbraden.co.uk)",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/peterbraden/ical.js.git"
