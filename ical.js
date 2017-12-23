@@ -96,7 +96,6 @@
     return dt
   }
 
-
   var dateParam = function(name){
       return function (val, params, curr) {
 
@@ -156,6 +155,16 @@
       }
   }
 
+  var exdateParam = function(name){
+    return function(val, params, curr){
+      var date = dateParam(name)(val, params, curr);
+      if (date.exdates === undefined) {
+        date.exdates = [];
+      }
+      date.exdates.push(date.exdate);
+      return date;
+    }
+  }
 
   var geoParam = function(name){
     return function(val, params, curr){
@@ -180,16 +189,37 @@
   }
 
   // EXDATE is an entry that represents exceptions to a recurrence rule (ex: "repeat every day except on 7/4").
-  // There can be more than one of these in a calendar record, so we create an array of them.
-  // The index into the array is the ISO string of the date itself, for ease of use.
+  // The EXDATE entry itself can also contain a comma-separated list, so we make sure to parse each date out separately.
+  // There can also be more than one EXDATE entries in a calendar record.
+  // Since there can be multiple dates, we create an array of them.  The index into the array is the ISO string of the date itself, for ease of use.
   // i.e. You can check if ((curr.exdate != undefined) && (curr.exdate[date iso string] != undefined)) to see if a date is an exception.
-  var exdateParam = function (name) {
-      return function (val, params, curr) {
-          var exdate = new Array();
-          dateParam(name)(val, params, exdate);
-          curr[name] = curr[name] || [];
-          curr[name][exdate[name].toISOString()] = exdate[name];
-          return curr;
+  // NOTE: This specifically uses date only, and not time.  This is to avoid a few problems:
+  //    1. The ISO string with time wouldn't work for "floating dates" (dates without timezones).
+  //       ex: "20171225T060000" - this is supposed to mean 6 AM in whatever timezone you're currently in
+  //    2. Daylight savings time potentially affects the time you would need to look up
+  //    3. Some EXDATE entries in the wild seem to have times different from the recurrence rule, but are still excluded by calendar programs.  Not sure how or why.
+  //       These would fail any sort of sane time lookup, because the time literally doesn't match the event.  So we'll ignore time and just use date.
+  //       ex: DTSTART:20170814T140000Z
+  //             RRULE:FREQ=WEEKLY;WKST=SU;INTERVAL=2;BYDAY=MO,TU
+  //             EXDATE:20171219T060000
+  //       Even though "T060000" doesn't match or overlap "T1400000Z", it's still supposed to be excluded?  Odd. :(
+  // TODO: See if this causes any problems with events that recur multiple times a day.
+	var exdateParam = function (name) {
+  	return function (val, params, curr) {
+  		var separatorPattern = /\s*,\s*/g;
+  		curr[name] = curr[name] || [];
+  		var dates = val ? val.split(separatorPattern) : [];
+  		dates.forEach(function (entry) {
+  				var exdate = new Array();
+  				dateParam(name)(entry, params, exdate);
+
+  				if (exdate[name])
+  				{
+  					curr[name][exdate[name].toISOString().substring(0, 10)] = exdate[name];
+  				}
+  			}
+        )
+        return curr;
       }
   }
 
@@ -321,8 +351,10 @@
         			par[curr.uid].recurrences = new Array();
             	}
 
-				// Save off our cloned recurrence object into the array, keyed by date.
-        		par[curr.uid].recurrences[curr.recurrenceid.toISOString()] = recurrenceObj;
+        		// Save off our cloned recurrence object into the array, keyed by date but not time.
+        		// We key by date only to avoid timezone and "floating time" problems (where the time isn't associated with a timezone).
+				// TODO: See if this causes a problem with events that have multiple recurrences per day.
+        		par[curr.uid].recurrences[curr.recurrenceid.toISOString().substring(0,10)] = recurrenceObj;
             }
 
         	// One more specific fix - in the case that an RRULE entry shows up after a RECURRENCE-ID entry,
@@ -346,6 +378,7 @@
       , 'LOCATION' : storeParam('location')
       , 'DTSTART' : dateParam('start')
       , 'DTEND' : dateParam('end')
+      , 'EXDATE' : exdateParam('exdate')
       ,' CLASS' : storeParam('class')
       , 'TRANSP' : storeParam('transparency')
       , 'GEO' : geoParam('geo')
@@ -354,7 +387,6 @@
       , 'CATEGORIES': categoriesParam('categories')
       , 'FREEBUSY': freebusyParam('freebusy')
       , 'DTSTAMP': dateParam('dtstamp')
-      , 'EXDATE': exdateParam('exdate')
       , 'CREATED': dateParam('created')
       , 'LAST-MODIFIED': dateParam('lastmodified')
       , 'RECURRENCE-ID': recurrenceParam('recurrenceid')
