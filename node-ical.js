@@ -6,9 +6,16 @@ exports.fromURL = function(url, opts, cb){
   if (!cb)
     return;
   request(url, opts, function(err, r, data){
-    if (err)
-      return cb(err, null);
-    cb(undefined, ical.parseICS(data));
+  	if (err)
+  	{
+  	  return cb(err, null);
+  	}
+  	else if (r.statusCode != 200)
+  	{
+       return cb(r.statusCode + ": " + r.statusMessage, null);
+  	}
+
+  	cb(undefined, ical.parseICS(data));
   })
 }
 
