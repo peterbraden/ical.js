@@ -155,17 +155,6 @@
       }
   }
 
-  var exdateParam = function(name){
-    return function(val, params, curr){
-      var date = dateParam(name)(val, params, curr);
-      if (date.exdates === undefined) {
-        date.exdates = [];
-      }
-      date.exdates.push(date.exdate);
-      return date;
-    }
-  }
-
   var geoParam = function(name){
     return function(val, params, curr){
       storeParam(val, params, curr)
@@ -204,23 +193,23 @@
   //             EXDATE:20171219T060000
   //       Even though "T060000" doesn't match or overlap "T1400000Z", it's still supposed to be excluded?  Odd. :(
   // TODO: See if this causes any problems with events that recur multiple times a day.
-	var exdateParam = function (name) {
-  	return function (val, params, curr) {
-  		var separatorPattern = /\s*,\s*/g;
-  		curr[name] = curr[name] || [];
-  		var dates = val ? val.split(separatorPattern) : [];
-  		dates.forEach(function (entry) {
-  				var exdate = new Array();
-  				dateParam(name)(entry, params, exdate);
+  var exdateParam = function (name) {
+    return function (val, params, curr) {
+      var separatorPattern = /\s*,\s*/g;
+      curr[name] = curr[name] || [];
+      var dates = val ? val.split(separatorPattern) : [];
+      dates.forEach(function (entry) {
+          var exdate = new Array();
+          dateParam(name)(entry, params, exdate);
 
-  				if (exdate[name])
-  				{
-  					curr[name][exdate[name].toISOString().substring(0, 10)] = exdate[name];
-  				}
-  			}
-        )
-        return curr;
-      }
+          if (exdate[name])
+          {
+            curr[name][exdate[name].toISOString().substring(0, 10)] = exdate[name];
+          }
+        }
+      )
+      return curr;
+    }
   }
 
   // RECURRENCE-ID is the ID of a specific recurrence within a recurrence rule.
