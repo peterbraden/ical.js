@@ -6,9 +6,7 @@
 A tolerant, minimal icalendar parser for javascript/node
 (http://tools.ietf.org/html/rfc5545)
 
-<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/EQ7CNg8Bk6jMVXt4GPMe3bMH/peterbraden/ical.js'>
-  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/EQ7CNg8Bk6jMVXt4GPMe3bMH/peterbraden/ical.js.svg' />
-</a>
+
 
 ## Install - Node.js ##
 
