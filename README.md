@@ -17,24 +17,45 @@ node-ical is availble on npm:
     npm install node-ical
 
 ## API
+Parses a string with ICS content synchronous. This can block the nodejs event loop on big files
 ```js
 var ical = require('node-ical');
 ical.parseICS(str);
 ```
 
-Parses a string with an ICS File
+Parses a string with ICS content asynchronous to prevent event loop from being blocked.
+```js
+var ical = require('node-ical');
+ical.parseICS(str, function(err, data) {
+    if (err) console.log(err);
+    console.log(data);
+});
+```
+
+Parses a string with an ICS File synchronous. This can block the nodejs event loop on big files
 ```js
 var data = ical.parseFile(filename);
 ```
 
-Reads in the specified iCal file, parses it and returns the parsed data
+Parses a string with an ICS File asynchronous to prevent event loop from being blocked.
 ```js
-ical.fromURL(url, options, function(err, data) {} );
+var data = ical.parseFile(filename, function(err, data) {
+    if (err) console.log(err);
+    console.log(data);
+});
+```
+
+Reads in the specified iCal file, parses it and returns the parsed data. This method always work asynchronous
+```js
+ical.fromURL(url, options, function(err, data) {
+    if (err) console.log(err);
+    console.log(data);
+});
 ```
 
 Use the request library to fetch the specified URL (```opts``` gets passed on to the ```request()``` call), and call the function with the result (either an error or the data).
 
-## Example 1 - Print list of upcoming node conferences (see example.js)
+## Example 1 - Print list of upcoming node conferences (see example.js) (parses the file synchronous)
 ```js
 var ical = require('node-ical');
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

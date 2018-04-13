@@ -8,12 +8,12 @@ exports.fromURL = function(url, opts, cb){
   request(url, opts, function(err, r, data){
     if (err)
       return cb(err, null);
-    cb(undefined, ical.parseICS(data));
+    ical.parseICS(data, cb);
   })
 }
 
-exports.parseFile = function(filename){
-  return ical.parseICS(fs.readFileSync(filename, 'utf8'))
+exports.parseFile = function(filename, cb){
+  return ical.parseICS(fs.readFileSync(filename, 'utf8'), cb)
 }
 
 
@@ -26,7 +26,7 @@ ical.objectHandlers['RRULE'] = function(val, params, curr, stack, line){
 var originalEnd = ical.objectHandlers['END'];
 ical.objectHandlers['END'] = function (val, params, curr, stack) {
 	// Recurrence rules are only valid for VEVENT, VTODO, and VJOURNAL.
-	// More specifically, we need to filter the VCALENDAR type because we might end up with a defined rrule 
+	// More specifically, we need to filter the VCALENDAR type because we might end up with a defined rrule
 	// due to the subtypes.
 	if ((val === "VEVENT") || (val === "VTODO") || (val === "VJOURNAL")) {
 		if (curr.rrule) {
