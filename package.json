@@ -11,12 +11,13 @@
   ],
   "homepage": "https://github.com/jens-maus/node-ical",
   "author": "Jens Maus <mail@jens-maus.de>",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/jens-maus/node-ical.git"
   },
   "dependencies": {
-    "request": "2.75.0",
+    "request": "^2.81.0",
     "rrule": "2.1.0",
     "node-uuid": "^1.4.1"
   },
