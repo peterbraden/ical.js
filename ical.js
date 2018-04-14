@@ -378,7 +378,7 @@ var UUID = require('node-uuid');
       return storeParam(name.toLowerCase())(val, params, ctx);
     },
 
-    parseLines : function(lines, limit, ctx, stack, cb){
+    parseLines : function(lines, limit, ctx, stack, lastIndex, cb){
       var self = this
       if (!cb && typeof ctx === 'function') {
         cb = ctx;
@@ -388,11 +388,13 @@ var UUID = require('node-uuid');
       var stack = stack || []
       var limitCounter = 0;
 
-      while (lines.length) {
-        l=lines.shift();
+      var i = lastIndex || 0
+      for (var ii = lines.length; i<ii; i++){
+        var l = lines[i]
         //Unfold : RFC#3.1
-        while (lines[0] && /[ \t]/.test(lines[0][0])) {
-          l += lines.shift().slice(1)
+        while (lines[i+1] && /[ \t]/.test(lines[i+1][0])) {
+          l += lines[i+1].slice(1)
+          i++
         }
 
         var exp = /([^":;]+)((?:;(?:[^":;]+)(?:=(?:(?:"[^"]*")|(?:[^":;]+))))*):(.*)/;
@@ -414,16 +416,16 @@ var UUID = require('node-uuid');
         }
       }
 
-      if (!lines.length) {
+      if (i >= lines.length) {
         // type and params are added to the list of items, get rid of them.
         delete ctx.type;
         delete ctx.params;
       }
 
       if (cb) {
-          if (lines.length) {
+          if (i < lines.length) {
             setImmediate(function() {
-                self.parseLines(lines, limit, ctx, stack, cb);
+                self.parseLines(lines, limit, ctx, stack, i+1, cb);
             });
           }
           else {
@@ -444,7 +446,7 @@ var UUID = require('node-uuid');
       var ctx;
 
       if (cb) { // asynchronous execution
-        self.parseLines(lines, 100, cb);
+        self.parseLines(lines, 2000, cb);
       }
       else { // synchronous execution
         ctx = self.parseLines(lines, lines.length);
