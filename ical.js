@@ -1,4 +1,4 @@
-var UUID = require('node-uuid');
+var UUID = require('uuid/v4');
 
 (function(name, definition) {
 
@@ -189,7 +189,12 @@ var UUID = require('node-uuid');
           var exdate = new Array();
           dateParam(name)(val, params, exdate);
           curr[name] = curr[name] || [];
-          curr[name][exdate[name].toISOString()] = exdate[name];
+          if (exdate[name] instanceof Date) {
+              curr[name][exdate[name].toISOString()] = exdate[name];
+          }
+          else {
+              curr[name][exdate[name]] = exdate[name];
+          }
           return curr;
       }
   }
@@ -334,7 +339,7 @@ var UUID = require('node-uuid');
 
         }
         else
-          par[UUID.v4()] = curr;
+          par[UUID()] = curr;
 
         return par
       }
