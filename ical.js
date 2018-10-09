@@ -323,7 +323,7 @@ var UUID = require('uuid/v4');
 
 				// If we don't have an array to store recurrences in yet, create it.
         		if (par[curr.uid].recurrences === undefined) {
-        			par[curr.uid].recurrences = new Array();
+        			par[curr.uid].recurrences = {};
             	}
 
 				// Save off our cloned recurrence object into the array, keyed by date.
