@@ -1,6 +1,6 @@
 {
   "name": "node-ical",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "main": "index.js",
   "description": "A minimal icalendar/ics parser for nodejs",
   "keywords": [
@@ -17,13 +17,16 @@
     "url": "git://github.com/jens-maus/node-ical.git"
   },
   "dependencies": {
-    "request": "^2.87.0",
-    "rrule": "^2.2.9",
-    "uuid": "^3.2.1"
+    "request": "^2.88.0",
+    "rrule": "^2.5.6",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "vows": "0.8.1",
-    "underscore": "1.9.1"
+    "vows": "0.8.2",
+    "underscore": "1.9.1",
+    "request": "^2.88.0",
+    "rrule": "^2.5.6",
+    "uuid": "^3.3.2"
   },
   "scripts": {
     "test": "./node_modules/vows/bin/vows ./test/test.js && ./node_modules/vows/bin/vows ./test/testAsync.js"
