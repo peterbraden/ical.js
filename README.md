@@ -63,7 +63,7 @@ var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oc
 ical.fromURL('http://lanyrd.com/topics/nodejs/nodejs.ics', {}, function(err, data) {
   for (var k in data){
     if (data.hasOwnProperty(k)) {
-      var ev = data[k]
+      var ev = data[k];
       console.log("Conference",
         ev.summary,
         'is in',
