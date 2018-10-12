@@ -186,9 +186,9 @@ var UUID = require('uuid/v4');
   // i.e. You can check if ((curr.exdate != undefined) && (curr.exdate[date iso string] != undefined)) to see if a date is an exception.
   var exdateParam = function (name) {
       return function (val, params, curr) {
-          var exdate = new Array();
+          var exdate = {};
           dateParam(name)(val, params, exdate);
-          curr[name] = curr[name] || [];
+          curr[name] = curr[name] || {};
           if (exdate[name] instanceof Date) {
               curr[name][exdate[name].toISOString()] = exdate[name];
           }
