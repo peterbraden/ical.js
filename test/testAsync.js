@@ -37,6 +37,9 @@ vows.describe('node-ical').addBatch({
       ,'starts Tue, 29 Nov 2011' : function(topic){
         assert.equal(topic.start.toDateString(), new Date(2011,10,29).toDateString())
       }
+      ,'datetype is date' : function(topic){
+        assert.equal(topic.datetype, 'date')
+      }
     }
     , 'event 480a' : {
       topic: function(events){
@@ -56,6 +59,9 @@ vows.describe('node-ical').addBatch({
       }
       , 'has a start datetime' : function(topic){
         assert.equal(topic.start.toDateString(), new Date(Date.UTC(2011, 2, 12, 20, 0, 0)).toDateString())
+      }
+      , 'datetype is date-time' : function(topic){
+        assert.equal(topic.datetype, 'date-time')
       }
     }
 
@@ -140,6 +146,9 @@ vows.describe('node-ical').addBatch({
       , 'has an end datetime' : function(topic) {
         assert.equal(topic.end.getFullYear(), 2011);
         assert.equal(topic.end.getMonth(), 4);
+      }
+      , 'datetype is date-time' : function(topic){
+        assert.equal(topic.datetype, 'date-time')
       }
     }
   }
@@ -227,7 +236,7 @@ vows.describe('node-ical').addBatch({
         })[0];
       }
       , 'has a start' : function(topic){
-        assert.equal(topic.start.toISOString(), new Date(2011, 07, 04, 12, 0,0).toISOString())
+        assert.equal(topic.start.toISOString(), new Date(2011, 07, 04, 0, 0, 0).toISOString())
       }
     }
   , 'event with rrule' :{

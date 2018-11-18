@@ -74,7 +74,7 @@ var UUID = require('uuid/v4');
           return curr
       }
   }
-
+  
   var storeParam = function (name) {
       return function (val, params, curr) {
           var data;
@@ -98,16 +98,26 @@ var UUID = require('uuid/v4');
     return dt
   }
 
+  var typeParam = function(name, typeName) {
+    return function(val, params, curr) {
+      var ret = 'date-time';
+      if (params && params.indexOf('VALUE=DATE') > -1 && params.indexOf('VALUE=DATE-TIME') == -1) {
+        ret = 'date';
+      }
+
+      return storeValParam(name)(ret, curr);
+    }
+  }
 
   var dateParam = function(name){
       return function (val, params, curr) {
 
       var newDate = text(val);
 
-      if (params && params.indexOf('VALUE=DATE') > -1) {
+      if (params && params.indexOf('VALUE=DATE') > -1 && params.indexOf('VALUE=DATE-TIME') == -1) {
         // Just Date
 
-        var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
+        var comps = /^(\d{4})(\d{2})(\d{2}).*$/.exec(val);
         if (comps !== null) {
           // No TZ info - assume same timezone as this computer
           newDate = new Date(
@@ -349,7 +359,10 @@ var UUID = require('uuid/v4');
       , 'URL' : storeParam('url')
       , 'UID' : storeParam('uid')
       , 'LOCATION' : storeParam('location')
-      , 'DTSTART' : dateParam('start')
+      , 'DTSTART' : function(val, params, curr) {
+          curr = dateParam('start')(val, params, curr);
+          return typeParam('datetype')(val, params, curr);
+      }
       , 'DTEND' : dateParam('end')
       ,' CLASS' : storeParam('class')
       , 'TRANSP' : storeParam('transparency')
