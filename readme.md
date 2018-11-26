@@ -34,21 +34,22 @@ Use the request library to fetch the specified URL (```opts``` gets passed on to
 
 ## Example 1 - Print list of upcoming node conferences (see example.js)
 ```javascript
-    var ical = require('ical')
-  , months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+'use strict';
 
-    ical.fromURL('http://lanyrd.com/topics/nodejs/nodejs.ics', {}, function(err, data) {
-      for (var k in data){
-        if (data.hasOwnProperty(k)) {
-          var ev = data[k]
-          console.log("Conference",
-            ev.summary,
-            'is in',
-            ev.location,
-            'on the', ev.start.getDate(), 'of', months[ev.start.getMonth()]);
-        }
-      }
-    });
+const ical = require('ical');
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+ical.fromURL('http://lanyrd.com/topics/nodejs/nodejs.ics', {}, function (err, data) {
+	for (let k in data) {
+		if (data.hasOwnProperty(k)) {
+			var ev = data[k];
+			if (data[k].type == 'VEVENT') {
+				console.log(`${ev.summary} is in ${ev.location} on the ${ev.start.getDate()} of ${months[ev.start.getMonth()]} at ${ev.start.toLocaleTimeString('en-GB')}`);
+
+			}
+		}
+	}
+});
 ```
 
 ## Recurrences and Exceptions ##
