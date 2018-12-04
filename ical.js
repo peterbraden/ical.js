@@ -33,9 +33,9 @@
     for (var i = 0; i<p.length; i++){
       if (p[i].indexOf('=') > -1){
         var segs = p[i].split('=');
-        
+
         out[segs[0]] = parseValue(segs.slice(1).join('='));
-        
+
       }
     }
     return out || sp
@@ -44,7 +44,7 @@
   var parseValue = function(val){
     if ('TRUE' === val)
       return true;
-    
+
     if ('FALSE' === val)
       return false;
 
@@ -155,6 +155,7 @@
       }
   }
 
+
   var geoParam = function(name){
     return function(val, params, curr){
       storeParam(val, params, curr)
@@ -204,7 +205,11 @@
 
           if (exdate[name])
           {
-            curr[name][exdate[name].toISOString().substring(0, 10)] = exdate[name];
+            if (typeof exdate[name].toISOString === 'function') {
+              curr[name][exdate[name].toISOString().substring(0, 10)] = exdate[name];
+            } else {
+              console.error("No toISOString function in exdate[name]", exdate[name]);
+            }
           }
         }
       )
@@ -262,7 +267,7 @@
             //scan all high level object in curr and drop all strings
             var key,
                 obj;
-            
+
             for (key in curr) {
                 if(curr.hasOwnProperty(key)) {
                    obj = curr[key];
@@ -271,10 +276,10 @@
                    }
                 }
             }
-            
+
             return curr
         }
-        
+
         var par = stack.pop()
 
         if (curr.uid)
@@ -321,7 +326,7 @@
         		// TODO:  Is there ever a case where we have to worry about overwriting an existing entry here?
 
         		// Create a copy of the current object to save in our recurrences array.  (We *could* just do par = curr,
-        		// except for the case that we get the RECURRENCE-ID record before the RRULE record.  In that case, we 
+        		// except for the case that we get the RECURRENCE-ID record before the RRULE record.  In that case, we
         		// would end up with a shared reference that would cause us to overwrite *both* records at the point
 				// that we try and fix up the parent record.)
         		var recurrenceObj = new Object();
@@ -343,7 +348,11 @@
         		// Save off our cloned recurrence object into the array, keyed by date but not time.
         		// We key by date only to avoid timezone and "floating time" problems (where the time isn't associated with a timezone).
 				// TODO: See if this causes a problem with events that have multiple recurrences per day.
-        		par[curr.uid].recurrences[curr.recurrenceid.toISOString().substring(0,10)] = recurrenceObj;
+                if (typeof curr.recurrenceid.toISOString === 'function') {
+                  par[curr.uid].recurrences[curr.recurrenceid.toISOString().substring(0,10)] = recurrenceObj;
+                } else {
+                  console.error("No toISOString function in curr.recurrenceid", curr.recurrenceid);
+                }
             }
 
         	// One more specific fix - in the case that an RRULE entry shows up after a RECURRENCE-ID entry,
@@ -395,7 +404,7 @@
           name = name.substring(2);
           return (storeParam(name))(val, params, ctx, stack, line);
       }
-      
+
       return storeParam(name.toLowerCase())(val, params, ctx);
     },
 
