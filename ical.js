@@ -33,9 +33,9 @@
     for (var i = 0; i<p.length; i++){
       if (p[i].indexOf('=') > -1){
         var segs = p[i].split('=');
-        
+
         out[segs[0]] = parseValue(segs.slice(1).join('='));
-        
+
       }
     }
     return out || sp
@@ -44,7 +44,7 @@
   var parseValue = function(val){
     if ('TRUE' === val)
       return true;
-    
+
     if ('FALSE' === val)
       return false;
 
@@ -95,7 +95,6 @@
 
     return dt
   }
-
 
   var dateParam = function(name){
       return function (val, params, curr) {
@@ -180,21 +179,42 @@
   }
 
   // EXDATE is an entry that represents exceptions to a recurrence rule (ex: "repeat every day except on 7/4").
-  // There can be more than one of these in a calendar record, so we create an array of them.
-  // The index into the array is the ISO string of the date itself, for ease of use.
+  // The EXDATE entry itself can also contain a comma-separated list, so we make sure to parse each date out separately.
+  // There can also be more than one EXDATE entries in a calendar record.
+  // Since there can be multiple dates, we create an array of them.  The index into the array is the ISO string of the date itself, for ease of use.
   // i.e. You can check if ((curr.exdate != undefined) && (curr.exdate[date iso string] != undefined)) to see if a date is an exception.
+  // NOTE: This specifically uses date only, and not time.  This is to avoid a few problems:
+  //    1. The ISO string with time wouldn't work for "floating dates" (dates without timezones).
+  //       ex: "20171225T060000" - this is supposed to mean 6 AM in whatever timezone you're currently in
+  //    2. Daylight savings time potentially affects the time you would need to look up
+  //    3. Some EXDATE entries in the wild seem to have times different from the recurrence rule, but are still excluded by calendar programs.  Not sure how or why.
+  //       These would fail any sort of sane time lookup, because the time literally doesn't match the event.  So we'll ignore time and just use date.
+  //       ex: DTSTART:20170814T140000Z
+  //             RRULE:FREQ=WEEKLY;WKST=SU;INTERVAL=2;BYDAY=MO,TU
+  //             EXDATE:20171219T060000
+  //       Even though "T060000" doesn't match or overlap "T1400000Z", it's still supposed to be excluded?  Odd. :(
+  // TODO: See if this causes any problems with events that recur multiple times a day.
   var exdateParam = function (name) {
-      return function (val, params, curr) {
+    return function (val, params, curr) {
+      var separatorPattern = /\s*,\s*/g;
+      curr[name] = curr[name] || [];
+      var dates = val ? val.split(separatorPattern) : [];
+      dates.forEach(function (entry) {
           var exdate = new Array();
-          dateParam(name)(val, params, exdate);
-          if (typeof exdate[name].toISOString === 'function') {
-              curr[name] = curr[name] || [];
-              curr[name][exdate[name].toISOString()] = exdate[name];
-              return curr;
-          } else {
+          dateParam(name)(entry, params, exdate);
+
+          if (exdate[name])
+          {
+            if (typeof exdate[name].toISOString === 'function') {
+              curr[name][exdate[name].toISOString().substring(0, 10)] = exdate[name];
+            } else {
               console.error("No toISOString function in exdate[name]", exdate[name]);
+            }
           }
-      }
+        }
+      )
+      return curr;
+    }
   }
 
   // RECURRENCE-ID is the ID of a specific recurrence within a recurrence rule.
@@ -247,7 +267,7 @@
             //scan all high level object in curr and drop all strings
             var key,
                 obj;
-            
+
             for (key in curr) {
                 if(curr.hasOwnProperty(key)) {
                    obj = curr[key];
@@ -256,10 +276,10 @@
                    }
                 }
             }
-            
+
             return curr
         }
-        
+
         var par = stack.pop()
 
         if (curr.uid)
@@ -306,7 +326,7 @@
         		// TODO:  Is there ever a case where we have to worry about overwriting an existing entry here?
 
         		// Create a copy of the current object to save in our recurrences array.  (We *could* just do par = curr,
-        		// except for the case that we get the RECURRENCE-ID record before the RRULE record.  In that case, we 
+        		// except for the case that we get the RECURRENCE-ID record before the RRULE record.  In that case, we
         		// would end up with a shared reference that would cause us to overwrite *both* records at the point
 				// that we try and fix up the parent record.)
         		var recurrenceObj = new Object();
@@ -325,11 +345,13 @@
         			par[curr.uid].recurrences = new Array();
             	}
 
-				// Save off our cloned recurrence object into the array, keyed by date.
+        		// Save off our cloned recurrence object into the array, keyed by date but not time.
+        		// We key by date only to avoid timezone and "floating time" problems (where the time isn't associated with a timezone).
+				// TODO: See if this causes a problem with events that have multiple recurrences per day.
                 if (typeof curr.recurrenceid.toISOString === 'function') {
-                    par[curr.uid].recurrences[curr.recurrenceid.toISOString()] = recurrenceObj;
+                  par[curr.uid].recurrences[curr.recurrenceid.toISOString().substring(0,10)] = recurrenceObj;
                 } else {
-        		    console.error("No toISOString function in curr.recurrenceid", curr.recurrenceid);
+                  console.error("No toISOString function in curr.recurrenceid", curr.recurrenceid);
                 }
             }
 
@@ -354,6 +376,7 @@
       , 'LOCATION' : storeParam('location')
       , 'DTSTART' : dateParam('start')
       , 'DTEND' : dateParam('end')
+      , 'EXDATE' : exdateParam('exdate')
       ,' CLASS' : storeParam('class')
       , 'TRANSP' : storeParam('transparency')
       , 'GEO' : geoParam('geo')
@@ -362,7 +385,6 @@
       , 'CATEGORIES': categoriesParam('categories')
       , 'FREEBUSY': freebusyParam('freebusy')
       , 'DTSTAMP': dateParam('dtstamp')
-      , 'EXDATE': exdateParam('exdate')
       , 'CREATED': dateParam('created')
       , 'LAST-MODIFIED': dateParam('lastmodified')
       , 'RECURRENCE-ID': recurrenceParam('recurrenceid')
@@ -382,7 +404,7 @@
           name = name.substring(2);
           return (storeParam(name))(val, params, ctx, stack, line);
       }
-      
+
       return storeParam(name.toLowerCase())(val, params, ctx);
     },
 
