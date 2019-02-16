@@ -3,6 +3,8 @@ tasks
 test
 test.js
 example.js
+*.ics
+*.tgz
 .travis.yml
 .idea
 .git
