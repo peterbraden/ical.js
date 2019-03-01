@@ -6,9 +6,16 @@ exports.fromURL = function(url, opts, cb){
   if (!cb)
     return;
   request(url, opts, function(err, r, data){
-    if (err)
-      return cb(err, null);
-    ical.parseICS(data, cb);
+  	if (err)
+  	{
+  	  return cb(err, null);
+  	}
+  	else if (r.statusCode != 200)
+  	{
+       return cb(r.statusCode + ": " + r.statusMessage, null);
+  	}
+
+  	cb(undefined, ical.parseICS(data));
   })
 }
 
@@ -40,8 +47,17 @@ ical.objectHandlers['END'] = function (val, params, curr, stack) {
 					}
 				}
 
-				rule += ';DTSTART=' + curr.start.toISOString().replace(/[-:]/g, '');
-				rule = rule.replace(/\.[0-9]{3}/, '');
+
+				if (typeof curr.start.toISOString === 'function') {
+					try {
+						rule += ';DTSTART=' + curr.start.toISOString().replace(/[-:]/g, '');
+						rule = rule.replace(/\.[0-9]{3}/, '');
+					} catch (error) {
+						console.error("ERROR when trying to convert to ISOString", error);
+					}
+                } else {
+                    console.error("No toISOString function in curr.start", curr.start);
+				}
 			}
 			curr.rrule = rrule.fromString(rule);
 		}

@@ -408,13 +408,13 @@ vows.describe('node-ical').addBatch({
       }
       , "Has two EXDATES": function (topic) {
       	assert.notEqual(topic.exdate, undefined);
-      	assert.notEqual(topic.exdate[new Date(Date.UTC(2015, 06, 08, 19, 0, 0)).toISOString()], undefined);
-      	assert.notEqual(topic.exdate[new Date(Date.UTC(2015, 06, 10, 19, 0, 0)).toISOString()], undefined);
+      	assert.notEqual(topic.exdate[new Date(Date.UTC(2015, 06, 08, 19, 0, 0)).toISOString().substring(0, 10)], undefined);
+      	assert.notEqual(topic.exdate[new Date(Date.UTC(2015, 06, 10, 19, 0, 0)).toISOString().substring(0, 10)], undefined);
       }
       , "Has a RECURRENCE-ID override": function (topic) {
       	assert.notEqual(topic.recurrences, undefined);
-      	assert.notEqual(topic.recurrences[new Date(Date.UTC(2015, 06, 07, 19, 0, 0)).toISOString()], undefined);
-      	assert.equal(topic.recurrences[new Date(Date.UTC(2015, 06, 07, 19, 0, 0)).toISOString()].summary, 'More Treasure Hunting');
+      	assert.notEqual(topic.recurrences[new Date(Date.UTC(2015, 06, 07, 19, 0, 0)).toISOString().substring(0, 10)], undefined);
+      	assert.equal(topic.recurrences[new Date(Date.UTC(2015, 06, 07, 19, 0, 0)).toISOString().substring(0, 10)].summary, 'More Treasure Hunting');
       }
     }
   }
@@ -437,15 +437,63 @@ vows.describe('node-ical').addBatch({
       }
       , "Has a RECURRENCE-ID override": function (topic) {
       	assert.notEqual(topic.recurrences, undefined);
-      	assert.notEqual(topic.recurrences[new Date(Date.UTC(2016, 7 ,26, 11, 0, 0)).toISOString()], undefined);
-      	assert.equal(topic.recurrences[new Date(Date.UTC(2016, 7, 26, 11, 0, 0)).toISOString()].summary, 'bla bla');
+      	assert.notEqual(topic.recurrences[new Date(Date.UTC(2016, 7 ,26, 11, 0, 0)).toISOString().substring(0, 10)], undefined);
+      	assert.equal(topic.recurrences[new Date(Date.UTC(2016, 7, 26, 11, 0, 0)).toISOString().substring(0, 10)].summary, 'bla bla');
       }
     }
   }
 
-  , 'with test14.ics (testing quoted parameter values)': {
+  , 'with test14.ics (testing comma-separated exdates)': {
   	topic: function () {
   		return ical.parseFile('./test/test14.ics')
+  	}
+    , 'event with comma-separated exdate': {
+    	topic: function (events) {
+    		return _.select(_.values(events), function (x) {
+    			return x.uid === '98765432-ABCD-DCBB-999A-987765432123';
+    		})[0];
+    	}
+      , "Has summary 'Example of comma-separated exdates'": function (topic) {
+      	assert.equal(topic.summary, 'Example of comma-separated exdates');
+      }
+      , "Has four comma-separated EXDATES": function (topic) {
+      	assert.notEqual(topic.exdate, undefined);
+		// Verify the four comma-separated EXDATES are there
+      	assert.notEqual(topic.exdate[new Date(2017, 6, 6, 12, 0, 0).toISOString().substring(0, 10)], undefined);
+      	assert.notEqual(topic.exdate[new Date(2017, 6, 17, 12, 0, 0).toISOString().substring(0, 10)], undefined);
+      	assert.notEqual(topic.exdate[new Date(2017, 6, 20, 12, 0, 0).toISOString().substring(0, 10)], undefined);
+      	assert.notEqual(topic.exdate[new Date(2017, 7, 3, 12, 0, 0).toISOString().substring(0, 10)], undefined);
+		// Verify an arbitrary date isn't there
+      	assert.equal(topic.exdate[new Date(2017, 4, 5, 12, 0, 0).toISOString().substring(0, 10)], undefined);
+      }
+    }
+  }
+
+  , 'with test14.ics (testing exdates with bad times)': {
+  	topic: function () {
+  		return ical.parseFile('./test/test14.ics')
+  	}
+    , 'event with exdates with bad times': {
+    	topic: function (events) {
+    		return _.select(_.values(events), function (x) {
+    			return x.uid === '1234567-ABCD-ABCD-ABCD-123456789012';
+    		})[0];
+    	}
+      , "Has summary 'Example of exdate with bad times'": function (topic) {
+      	assert.equal(topic.summary, 'Example of exdate with bad times');
+      }
+      , "Has two EXDATES even though they have bad times": function (topic) {
+      	assert.notEqual(topic.exdate, undefined);
+      	// Verify the two EXDATES are there, even though they have bad times
+      	assert.notEqual(topic.exdate[new Date(2017, 11, 18, 12, 0, 0).toISOString().substring(0, 10)], undefined);
+      	assert.notEqual(topic.exdate[new Date(2017, 11, 19, 12, 0, 0).toISOString().substring(0, 10)], undefined);
+      }
+    }
+  }
+
+  , 'with test15.ics (testing quoted parameter values)': {
+  	topic: function () {
+  		return ical.parseFile('./test/test15.ics')
   	}
     , 'quoted params': {
     	topic: function (events) {
@@ -457,9 +505,9 @@ vows.describe('node-ical').addBatch({
     }
   }
 
-  , 'with test15.ics (testing for non-stringified start/end time)': {
+  , 'with test16.ics (testing for non-stringified start/end time)': {
   	topic: function () {
-  		return ical.parseFile('./test/test15.ics')
+  		return ical.parseFile('./test/test16.ics')
   	}
     , 'stringified params': {
     	topic: function (events) {
