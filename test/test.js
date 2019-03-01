@@ -118,6 +118,15 @@ vows.describe('node-ical').addBatch({
         assert.equal(topic.end.getUTCMinutes(), 30);
       }
     }
+    , 'tzid parsing' : {
+      topic: function(events) {
+        return _.filter(events,function(obj) { { return obj.uid == 'EC9439B1-FF65-11D6-9973-003065F99D04'; } })[0];
+      }
+      , 'tzid offset correctly applied' : function(event) {
+        var start = new Date('2002-10-28T22:00:00.000Z');
+        assert.equal(event.start.valueOf(), start.valueOf());
+      }
+    }
   }
   , 'with test3.ics (testing tvcountdown.com)' : {
     topic: function() {
