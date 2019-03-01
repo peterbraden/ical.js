@@ -1,4 +1,5 @@
 var UUID = require('uuid/v4');
+var moment = require('moment-timezone');
 
 (function(name, definition) {
 
@@ -147,6 +148,24 @@ var UUID = require('uuid/v4');
             parseInt(comps[6], 10 )
           ));
           // TODO add tz
+        } else if (params && params[0] && params[0].indexOf('TZID=') > -1 && params[0].split('=')[1]) {
+          var tz = params[0].split('=')[1];
+          //lookup tz
+          var found = moment.tz.names().filter(function(zone) { return zone === tz; })[0];
+          if (found) {
+            var zoneDate = moment.tz(val, 'YYYYMMDDTHHmmss', tz);
+            newDate = zoneDate.toDate();
+          } else {
+            //fallback if tz not found
+            newDate = new Date(
+              parseInt(comps[1], 10),
+              parseInt(comps[2], 10)-1,
+              parseInt(comps[3], 10),
+              parseInt(comps[4], 10),
+              parseInt(comps[5], 10),
+              parseInt(comps[6], 10)
+            );
+          }
         } else {
           newDate = new Date(
             parseInt(comps[1], 10),

@@ -125,6 +125,15 @@ vows.describe('node-ical').addBatch({
         assert.equal(topic.end.getUTCMinutes(), 30);
       }
     }
+    , 'tzid parsing' : {
+      topic: function(events) {
+        return _.filter(events,function(obj) { { return obj.uid == 'EC9439B1-FF65-11D6-9973-003065F99D04'; } })[0];
+      }
+      , 'tzid offset correctly applied' : function(event) {
+        var start = new Date('2002-10-28T22:00:00.000Z');
+        assert.equal(event.start.valueOf(), start.valueOf());
+      }
+    }
   }
   , 'with test3.ics (testing tvcountdown.com)' : {
     topic: function() {
@@ -217,7 +226,7 @@ vows.describe('node-ical').addBatch({
       }
       , 'has a start' : function(topic){
         assert.equal(topic.start.tz, 'America/Phoenix')
-        assert.equal(topic.start.toISOString(), new Date(2011, 10, 09, 19, 0,0).toISOString())
+        assert.equal(topic.start.toISOString(), new Date(Date.UTC(2011, 10, 10, 02, 0,0)).toISOString())
       }
     }
   }
@@ -439,13 +448,13 @@ vows.describe('node-ical').addBatch({
       }
       , "Has two EXDATES": function (topic) {
       	assert.notEqual(topic.exdate, undefined);
-      	assert.notEqual(topic.exdate[new Date(2015, 06, 08, 12, 0, 0).toISOString()], undefined);
-      	assert.notEqual(topic.exdate[new Date(2015, 06, 10, 12, 0, 0).toISOString()], undefined);
+      	assert.notEqual(topic.exdate[new Date(Date.UTC(2015, 06, 08, 19, 0, 0)).toISOString()], undefined);
+      	assert.notEqual(topic.exdate[new Date(Date.UTC(2015, 06, 10, 19, 0, 0)).toISOString()], undefined);
       }
       , "Has a RECURRENCE-ID override": function (topic) {
       	assert.notEqual(topic.recurrences, undefined);
-      	assert.notEqual(topic.recurrences[new Date(2015, 06, 07, 12, 0, 0).toISOString()], undefined);
-      	assert.equal(topic.recurrences[new Date(2015, 06, 07, 12, 0, 0).toISOString()].summary, 'More Treasure Hunting');
+      	assert.notEqual(topic.recurrences[new Date(Date.UTC(2015, 06, 07, 19, 0, 0)).toISOString()], undefined);
+      	assert.equal(topic.recurrences[new Date(Date.UTC(2015, 06, 07, 19, 0, 0)).toISOString()].summary, 'More Treasure Hunting');
       }
     }
   }
@@ -471,8 +480,8 @@ vows.describe('node-ical').addBatch({
       }
       , "Has a RECURRENCE-ID override": function (topic) {
       	assert.notEqual(topic.recurrences, undefined);
-      	assert.notEqual(topic.recurrences[new Date(2016, 7 ,26, 14, 0, 0).toISOString()], undefined);
-      	assert.equal(topic.recurrences[new Date(2016, 7, 26, 14, 0, 0).toISOString()].summary, 'bla bla');
+      	assert.notEqual(topic.recurrences[new Date(Date.UTC(2016, 7 ,26, 11, 0, 0)).toISOString()], undefined);
+      	assert.equal(topic.recurrences[new Date(Date.UTC(2016, 7, 26, 11, 0, 0)).toISOString()].summary, 'bla bla');
       }
     }
   }
