@@ -448,13 +448,13 @@ vows.describe('node-ical').addBatch({
       }
       , "Has two EXDATES": function (topic) {
       	assert.notEqual(topic.exdate, undefined);
-      	assert.notEqual(topic.exdate[new Date(Date.UTC(2015, 06, 08, 19, 0, 0)).toISOString()], undefined);
-      	assert.notEqual(topic.exdate[new Date(Date.UTC(2015, 06, 10, 19, 0, 0)).toISOString()], undefined);
+      	assert.notEqual(topic.exdate[new Date(Date.UTC(2015, 06, 08, 19, 0, 0)).toISOString().substring(0, 10)], undefined);
+      	assert.notEqual(topic.exdate[new Date(Date.UTC(2015, 06, 10, 19, 0, 0)).toISOString().substring(0, 10)], undefined);
       }
       , "Has a RECURRENCE-ID override": function (topic) {
       	assert.notEqual(topic.recurrences, undefined);
-      	assert.notEqual(topic.recurrences[new Date(Date.UTC(2015, 06, 07, 19, 0, 0)).toISOString()], undefined);
-      	assert.equal(topic.recurrences[new Date(Date.UTC(2015, 06, 07, 19, 0, 0)).toISOString()].summary, 'More Treasure Hunting');
+      	assert.notEqual(topic.recurrences[new Date(Date.UTC(2015, 06, 07, 19, 0, 0)).toISOString().substring(0, 10)], undefined);
+      	assert.equal(topic.recurrences[new Date(Date.UTC(2015, 06, 07, 19, 0, 0)).toISOString().substring(0, 10)].summary, 'More Treasure Hunting');
       }
     }
   }
@@ -480,16 +480,16 @@ vows.describe('node-ical').addBatch({
       }
       , "Has a RECURRENCE-ID override": function (topic) {
       	assert.notEqual(topic.recurrences, undefined);
-      	assert.notEqual(topic.recurrences[new Date(Date.UTC(2016, 7 ,26, 11, 0, 0)).toISOString()], undefined);
-      	assert.equal(topic.recurrences[new Date(Date.UTC(2016, 7, 26, 11, 0, 0)).toISOString()].summary, 'bla bla');
+      	assert.notEqual(topic.recurrences[new Date(Date.UTC(2016, 7 ,26, 11, 0, 0)).toISOString().substring(0, 10)], undefined);
+      	assert.equal(topic.recurrences[new Date(Date.UTC(2016, 7, 26, 11, 0, 0)).toISOString().substring(0, 10)].summary, 'bla bla');
       }
     }
   }
 
-  , 'with test14.ics (testing quoted parameter values)': {
+  , 'with test15.ics (testing quoted parameter values)': {
   	topic: function () {
         var self = this;
-        ical.parseFile('./test/test14.ics', function(err, ctx) {
+        ical.parseFile('./test/test15.ics', function(err, ctx) {
             self.callback(null, ctx);
         });
   	}
@@ -503,10 +503,10 @@ vows.describe('node-ical').addBatch({
     }
   }
 
-  , 'with test15.ics (testing for non-stringified start/end time)': {
+  , 'with test16.ics (testing for non-stringified start/end time)': {
   	topic: function () {
         var self = this;
-        ical.parseFile('./test/test15.ics', function(err, ctx) {
+        ical.parseFile('./test/test16.ics', function(err, ctx) {
             self.callback(null, ctx);
         });
   	}
