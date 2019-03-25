@@ -43,6 +43,12 @@ vows.describe('node-ical').addBatch({
       , 'has a summary (invalid colon handling tolerance)' : function(topic){
         assert.equal(topic.summary, '[Async]: Everything Express')
       }
+      , 'has a date only start datetime' : function(topic){
+        assert.equal(topic.start.dateOnly, true)
+      }
+      , 'has a date only end datetime' : function(topic){
+        assert.equal(topic.end.dateOnly, true)
+      }
     }
     , 'event d4c8' :{
       topic : function(events){
