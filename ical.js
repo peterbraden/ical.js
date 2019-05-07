@@ -429,7 +429,7 @@
           i += 1
         }
 
-        // Split on semicolumns except if the semicolumn is surrounded by quotes
+        // Split on semicolons except if the semicolon is surrounded by quotes
         var kv = l.split(/:(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/g)
 
         if (kv.length < 2){
