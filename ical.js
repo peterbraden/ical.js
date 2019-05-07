@@ -91,6 +91,12 @@
 
     if (params && p){
       dt.tz = p.TZID
+      if (dt.tz !== undefined)
+      {
+        // Remove surrouding quotes if found at the begining and at the end of the string
+        // (Occurs when parsing Microsoft Exchange events containing TZID with Windows standard format instead IANA)
+        dt.tz = dt.tz.replace(/^"(.*)"$/, "$1")
+      }
     }
 
     return dt
@@ -423,7 +429,8 @@
           i += 1
         }
 
-        var kv = l.split(":")
+        // Split on semicolumns except if the semicolumn is surrounded by quotes
+        var kv = l.split(/:(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/g)
 
         if (kv.length < 2){
           // Invalid line - must have k&v
