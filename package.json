@@ -23,7 +23,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "eslint": "^6.1.0",
+    "eslint": "^6.5.1",
     "eslint-config-prettier": "^6.3.0",
     "eslint-plugin-es5": "^1.4.1",
     "eslint-plugin-import": "^2.18.2",
@@ -33,13 +33,14 @@
     "rrule": "^2.5.6",
     "underscore": "1.9.1",
     "uuid": "^3.3.2",
-    "vows": "0.8.2"
+    "vows": "^0.8.2"
   },
   "scripts": {
     "test": "vows test/test.js && vows test/testAsync.js && printf \"\\n\"",
     "lint": "eslint *.js test/*.js",
     "fix": "eslint --fix *.js test/*.js",
     "format-check": "prettier --config .prettierrc.js --check *.js test/*.js",
-    "format": "prettier --config .prettierrc.js --write *.js test/*.js"
+    "format": "prettier --config .prettierrc.js --write *.js test/*.js",
+    "precommit": "npm run format && npm run fix"
   }
 }

@@ -121,7 +121,7 @@ vows.describe('node-ical')
                     assert.equal(topic.end.getFullYear(), 1998);
                     assert.equal(topic.end.getUTCMonth(), 2);
                     assert.equal(topic.end.getUTCDate(), 15);
-                    assert.equal(topic.end.getUTCHours(), 00);
+                    assert.equal(topic.end.getUTCHours(), 0);
                     assert.equal(topic.end.getUTCMinutes(), 30);
                 },
             },
@@ -175,7 +175,7 @@ vows.describe('node-ical')
                 },
                 'has a start datetime': function(topic) {
                     assert.equal(topic.start.getFullYear(), 2011);
-                    assert.equal(topic.start.getMonth(), 09);
+                    assert.equal(topic.start.getMonth(), 9);
                     assert.equal(topic.start.getDate(), 11);
                 },
 
@@ -217,7 +217,7 @@ vows.describe('node-ical')
                 },
                 'has a start': function(topic) {
                     assert.equal(topic.start.tz, 'America/Phoenix');
-                    assert.equal(topic.start.toISOString(), new Date(Date.UTC(2011, 10, 10, 02, 0, 0)).toISOString());
+                    assert.equal(topic.start.toISOString(), new Date(Date.UTC(2011, 10, 10, 2, 0, 0)).toISOString());
                 },
             },
         },
@@ -233,7 +233,7 @@ vows.describe('node-ical')
                     })[0];
                 },
                 'has a start': function(topic) {
-                    assert.equal(topic.start.toISOString(), new Date(2011, 07, 04, 0, 0, 0).toISOString());
+                    assert.equal(topic.start.toISOString(), new Date(2011, 7, 4, 0, 0, 0).toISOString());
                 },
             },
             'event with rrule': {
@@ -274,7 +274,7 @@ vows.describe('node-ical')
                 },
                 'task completed': function(task) {
                     assert.equal(task.completion, 100);
-                    assert.equal(task.completed.toISOString(), new Date(2013, 06, 16, 10, 57, 45).toISOString());
+                    assert.equal(task.completed.toISOString(), new Date(2013, 6, 16, 10, 57, 45).toISOString());
                 },
             },
         },
@@ -400,7 +400,7 @@ vows.describe('node-ical')
                     assert.equal(topic.end.getFullYear(), 2014);
                     assert.equal(topic.end.getMonth(), 3);
                     assert.equal(topic.end.getUTCHours(), 19);
-                    assert.equal(topic.end.getUTCMinutes(), 00);
+                    assert.equal(topic.end.getUTCMinutes(), 0);
                 },
             },
         },
@@ -424,22 +424,22 @@ vows.describe('node-ical')
                 'Has two EXDATES': function(topic) {
                     assert.notEqual(topic.exdate, undefined);
                     assert.notEqual(
-                        topic.exdate[new Date(Date.UTC(2015, 06, 08, 19, 0, 0)).toISOString().substring(0, 10)],
+                        topic.exdate[new Date(Date.UTC(2015, 6, 8, 19, 0, 0)).toISOString().substring(0, 10)],
                         undefined
                     );
                     assert.notEqual(
-                        topic.exdate[new Date(Date.UTC(2015, 06, 10, 19, 0, 0)).toISOString().substring(0, 10)],
+                        topic.exdate[new Date(Date.UTC(2015, 6, 10, 19, 0, 0)).toISOString().substring(0, 10)],
                         undefined
                     );
                 },
                 'Has a RECURRENCE-ID override': function(topic) {
                     assert.notEqual(topic.recurrences, undefined);
                     assert.notEqual(
-                        topic.recurrences[new Date(Date.UTC(2015, 06, 07, 19, 0, 0)).toISOString().substring(0, 10)],
+                        topic.recurrences[new Date(Date.UTC(2015, 6, 7, 19, 0, 0)).toISOString().substring(0, 10)],
                         undefined
                     );
                     assert.equal(
-                        topic.recurrences[new Date(Date.UTC(2015, 06, 07, 19, 0, 0)).toISOString().substring(0, 10)]
+                        topic.recurrences[new Date(Date.UTC(2015, 6, 7, 19, 0, 0)).toISOString().substring(0, 10)]
                             .summary,
                         'More Treasure Hunting'
                     );
@@ -589,9 +589,3 @@ vows.describe('node-ical')
         },
     })
     .export(module);
-
-//ical.fromURL('http://lanyrd.com/topics/nodejs/nodejs.ics',
-//  {},
-//  function(err, data){
-//    console.log("OUT:", data)
-//  })
