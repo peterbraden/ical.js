@@ -2,6 +2,13 @@ var UUID = require('uuid/v4');
 var moment = require('moment-timezone');
 var rrule = require('rrule').RRule;
 
+/****************
+ *  A tolerant, minimal icalendar parser
+ *  (http://tools.ietf.org/html/rfc5545)
+ *
+ *  <peterbraden@peterbraden.co.uk>
+ * **************/
+
 // Unescape Text re RFC 4.3.11
 var text = function(t) {
     t = t || '';
