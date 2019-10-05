@@ -226,11 +226,18 @@ autodetect.parseICS = function(data, cb) {
     }
 };
 
-// export
+// export api functions
 module.exports = {
+    // autodetect
     fromURL: async.fromURL,
     parseFile: autodetect.parseFile,
     parseICS: autodetect.parseICS,
+    // sync
     sync: sync,
+    // async
     async: async,
+    // other backwards compat things
+    objectHandlers: ical.objectHandlers,
+    handleObject: ical.handleObject,
+    parseLines: ical.parseLines,
 };
