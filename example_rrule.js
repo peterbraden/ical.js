@@ -22,10 +22,10 @@ for (const k in data) {
 
         // Simple case - no recurrences, just print out the calendar event.
         if (typeof event.rrule === 'undefined') {
-            console.log(`title:${title}`);
-            console.log(`startDate:${startDate.format('MMMM Do YYYY, h:mm:ss a')}`);
-            console.log(`endDate:${endDate.format('MMMM Do YYYY, h:mm:ss a')}`);
-            console.log(`duration:${moment.duration(duration).humanize()}`);
+            console.log('title:' + title);
+            console.log('startDate:' + startDate.format('MMMM Do YYYY, h:mm:ss a'));
+            console.log('endDate:' + endDate.format('MMMM Do YYYY, h:mm:ss a'));
+            console.log('duration:' + moment.duration(duration).humanize());
             console.log();
         }
 
@@ -88,10 +88,10 @@ for (const k in data) {
                 }
 
                 if (showRecurrence === true) {
-                    console.log(`title:${recurrenceTitle}`);
-                    console.log(`startDate:${startDate.format('MMMM Do YYYY, h:mm:ss a')}`);
-                    console.log(`endDate:${endDate.format('MMMM Do YYYY, h:mm:ss a')}`);
-                    console.log(`duration:${moment.duration(curDuration).humanize()}`);
+                    console.log('title:' + recurrenceTitle);
+                    console.log('startDate:' + startDate.format('MMMM Do YYYY, h:mm:ss a'));
+                    console.log('endDate:' + endDate.format('MMMM Do YYYY, h:mm:ss a'));
+                    console.log('duration:' + moment.duration(curDuration).humanize());
                     console.log();
                 }
             }

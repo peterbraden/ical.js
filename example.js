@@ -8,9 +8,16 @@ ical.fromURL('http://lanyrd.com/topics/nodejs/nodejs.ics', {}, function(err, dat
             const ev = data[k];
             if (data[k].type == 'VEVENT') {
                 console.log(
-                    `${ev.summary} is in ${ev.location} on the ${ev.start.getDate()} of ${
-                        months[ev.start.getMonth()]
-                    } at ${ev.start.toLocaleTimeString('en-GB')}`
+                    '' +
+                        ev.summary +
+                        ' is in ' +
+                        ev.location +
+                        ' on the ' +
+                        ev.start.getDate() +
+                        ' of ' +
+                        months[ev.start.getMonth()] +
+                        ' at ' +
+                        ev.start.toLocaleTimeString('en-GB')
                 );
             }
         }

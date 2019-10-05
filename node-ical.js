@@ -1,26 +1,99 @@
-const request = require('request');
-const fs = require('fs');
+var request = require('request');
+var fs = require('fs');
+var rrule = require('rrule').RRule;
 
+var ical = require('./ical');
+
+/**
+ * Callback for iCal parsing functions with error and iCal data as a JavaScript object.
+ * @callback icsCallback
+ * @param {Error} err
+ * @param {Object} ics
+ */
+/**
+ * A Promise that is undefined if a compatible callback is passed.
+ * @typedef {(Promise|undefined)} optionalPromise
+ */
+
+/**
+ * Download an iCal file from the web and parse it.
+ *
+ * @param {string} url                - URL of file to request.
+ * @param {Object|icsCallback} [opts] - Options to pass to request() from npm:request.
+ *                                      Alternatively you can pass the callback function directly.
+ *                                      If no callback is provided a promise will be returned.
+ * @param {icsCallback} [cb]          - Callback function.
+ *                                      If no callback is provided a promise will be returned.
+ *
+ * @returns {optionalPromise} Promise is returned if no callback is passed.
+ */
 exports.fromURL = function(url, opts, cb) {
-    if (!cb) return;
-    request(url, opts, function(err, r, data) {
-        if (err) {
-            return cb(err, null);
-        }
-        if (r.statusCode != 200) {
-            return cb(`${r.statusCode}: ${r.statusMessage}`, null);
-        }
-
-        cb(undefined, ical.parseICS(data));
-    });
+    return promiseCallback(function(resolve, reject) {
+        request(url, opts, function(err, res, data) {
+            if (err) {
+                reject(err);
+                return;
+            }
+            // if (r.statusCode !== 200) {
+            // all ok status codes should be accepted (any 2XX code)
+            if (Math.floor(res.statusCode / 100) !== 2) {
+                reject(new Error(res.statusCode + ': ' + res.statusMessage));
+                return;
+            }
+            ical.parseICS(data, function(err, ics) {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve(ics);
+            });
+        });
+    }, cb);
 };
 
+/**
+ * Load iCal data from a file and parse it.
+ *
+ * @param {string} filename   - File path to load.
+ * @param {icsCallback} [cb]  - Callback function.
+ *                              If no callback is provided a promise will be returned.
+ *
+ * @returns {optionalPromise} Promise is returned if no callback is passed.
+ */
 exports.parseFile = function(filename, cb) {
-    return ical.parseICS(fs.readFileSync(filename, 'utf8'), cb);
+    return promiseCallback(function(resolve, reject) {
+        fs.readFile(filename, 'utf8', function(err, data) {
+            if (err) {
+                reject(err);
+                return;
+            }
+            ical.parseICS(data, function(err, ics) {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve(ics);
+            });
+        });
+    }, cb);
 };
 
-const rrule = require('rrule').RRule;
-const ical = require('./ical');
+// utility to allow callbacks to be used for promises
+function promiseCallback(fn, cb) {
+    var promise = new Promise(fn);
+    if (!cb) {
+        return promise;
+    } else {
+        promise()
+            .then(function(ret) {
+                cb(null, ret);
+            })
+            .catch(function(err) {
+                cb(err, null);
+            });
+        return;
+    }
+}
 
 ical.objectHandlers.RRULE = function(val, params, curr, stack, line) {
     curr.rrule = line;
@@ -44,7 +117,7 @@ ical.objectHandlers.END = function(val, params, curr, stack) {
 
                 if (typeof curr.start.toISOString === 'function') {
                     try {
-                        rule += `;DTSTART=${curr.start.toISOString().replace(/[-:]/g, '')}`;
+                        rule += ';DTSTART=' + curr.start.toISOString().replace(/[-:]/g, '');
                         rule = rule.replace(/\.[0-9]{3}/, '');
                     } catch (error) {
                         console.error('ERROR when trying to convert to ISOString', error);

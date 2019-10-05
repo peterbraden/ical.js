@@ -269,7 +269,7 @@ const moment = require('moment-timezone');
             'BEGIN': function(component, params, curr, stack) {
                 stack.push(curr);
 
-                return { type: component, params };
+                return { type: component, params: params };
             },
 
             'END': function(component, params, curr, stack) {
@@ -391,7 +391,7 @@ const moment = require('moment-timezone');
             'RECURRENCE-ID': recurrenceParam('recurrenceid'),
         },
 
-        handleObject(name, val, params, ctx, stack, line) {
+        handleObject: function(name, val, params, ctx, stack, line) {
             const self = this;
 
             if (self.objectHandlers[name]) return self.objectHandlers[name](val, params, ctx, stack, line);
@@ -406,7 +406,7 @@ const moment = require('moment-timezone');
             return storeParam(name.toLowerCase())(val, params, ctx);
         },
 
-        parseLines(lines, limit, ctx, stack, lastIndex, cb) {
+        parseLines: function(lines, limit, ctx, stack, lastIndex, cb) {
             const self = this;
             if (!cb && typeof ctx === 'function') {
                 cb = ctx;
@@ -465,7 +465,7 @@ const moment = require('moment-timezone');
             }
         },
 
-        parseICS(str, cb) {
+        parseICS: function(str, cb) {
             const self = this;
             const lines = str.split(/\r?\n/);
             let ctx;
