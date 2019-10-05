@@ -10,7 +10,7 @@ module.exports = {
     'parserOptions': {
         'ecmaVersion': 2015
     },
-    'extends': ['eslint:recommended', 'airbnb', 'prettier'],
+    'extends': ['eslint:recommended', 'airbnb/base', 'prettier'],
     'plugins': ['prettier', 'es5'],
     'rules': {
         'prettier/prettier': ['error']
