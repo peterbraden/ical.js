@@ -1,24 +1,24 @@
-const moment = require('moment');
-const ical = require('./node-ical');
+var moment = require('moment-timezone');
+var ical = require('./index'); // require('node-ical');
 
-const data = ical.parseFile('./examples/example_rrule.ics');
+var data = ical.parseFile('./examples/example_rrule.ics');
 
 // Complicated example demonstrating how to handle recurrence rules and exceptions.
 
-for (const k in data) {
+for (var k in data) {
     // When dealing with calendar recurrences, you need a range of dates to query against,
     // because otherwise you can get an infinite number of calendar events.
-    const rangeStart = moment('2017-01-01');
-    const rangeEnd = moment('2017-12-31');
+    var rangeStart = moment('2017-01-01');
+    var rangeEnd = moment('2017-12-31');
 
-    const event = data[k];
+    var event = data[k];
     if (event.type === 'VEVENT') {
-        const title = event.summary;
-        let startDate = moment(event.start);
-        let endDate = moment(event.end);
+        var title = event.summary;
+        var startDate = moment(event.start);
+        var endDate = moment(event.end);
 
         // Calculate the duration of the event for use with recurring events.
-        const duration = parseInt(endDate.format('x')) - parseInt(startDate.format('x'));
+        var duration = parseInt(endDate.format('x')) - parseInt(startDate.format('x'));
 
         // Simple case - no recurrences, just print out the calendar event.
         if (typeof event.rrule === 'undefined') {
@@ -33,7 +33,7 @@ for (const k in data) {
         else if (typeof event.rrule !== 'undefined') {
             // For recurring events, get the set of event start dates that fall within the range
             // of dates we're looking for.
-            const dates = event.rrule.between(rangeStart.toDate(), rangeEnd.toDate(), true, function(date, i) {
+            var dates = event.rrule.between(rangeStart.toDate(), rangeEnd.toDate(), true, function(date, i) {
                 return true;
             });
 
@@ -43,7 +43,7 @@ for (const k in data) {
             // to add *all* recurrence override entries into the set of dates that we check, and then later
             // filter out any recurrences that don't actually belong within our range.
             if (event.recurrences != undefined) {
-                for (const r in event.recurrences) {
+                for (var r in event.recurrences) {
                     // Only add dates that weren't already in the range we added from the rrule so that
                     // we don't double-add those events.
                     if (moment(new Date(r)).isBetween(rangeStart, rangeEnd) != true) {
@@ -53,16 +53,16 @@ for (const k in data) {
             }
 
             // Loop through the set of date entries to see which recurrences should be printed.
-            for (const i in dates) {
-                const date = dates[i];
-                let curEvent = event;
-                let showRecurrence = true;
-                let curDuration = duration;
+            for (var i in dates) {
+                var date = dates[i];
+                var curEvent = event;
+                var showRecurrence = true;
+                var curDuration = duration;
 
                 startDate = moment(date);
 
                 // Use just the date of the recurrence to look up overrides and exceptions (i.e. chop off time information)
-                const dateLookupKey = date.toISOString().substring(0, 10);
+                var dateLookupKey = date.toISOString().substring(0, 10);
 
                 // For each date that we're checking, it's possible that there is a recurrence override for that one day.
                 if (curEvent.recurrences != undefined && curEvent.recurrences[dateLookupKey] != undefined) {
@@ -78,7 +78,7 @@ for (const k in data) {
                 }
 
                 // Set the the title and the end date from either the regular event or the recurrence override.
-                const recurrenceTitle = curEvent.summary;
+                var recurrenceTitle = curEvent.summary;
                 endDate = moment(parseInt(startDate.format('x')) + curDuration, 'x');
 
                 // If this recurrence ends before the start of the date range, or starts after the end of the date range,

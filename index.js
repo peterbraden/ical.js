@@ -223,6 +223,7 @@ autodetect.parseICS = function(data, cb) {
 
 // export
 module.exports = {
+    fromURL: async.fromURL,
     parseFile: autodetect.parseFile,
     parseICS: autodetect.parseICS,
     sync: sync,
