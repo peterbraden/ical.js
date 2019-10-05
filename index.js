@@ -5,16 +5,21 @@ var ical = require('./ical.js');
 
 /**
  * iCal event object.
+ *
+ * These two fields are always present:
+ *  - type
+ *  - params
+ *
+ * The rest of the fields may or may not be present depending on the input.
+ * Do not assume any of these fields are valid and check them before using.
+ * Most types are simply there as a general guide for IDEs and users.
+ *
  * @typedef iCalEvent
  * @type {object}
  *
- * These two fields are always present:
  * @property {string} type           - Type of event.
- * @property {Array} params
+ * @property {Array} params          - Extra event parameters.
  *
- * The rest of the fields may or may not be present depending on the input:
- * Do not assume any of these fields are valid and check them before using.
- * This is a general guide for most iCal VEVENTs.
  * @property {?object} start         - When this event starts.
  * @property {?object} end           - When this event ends.
  *
