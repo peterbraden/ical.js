@@ -1,8 +1,8 @@
-module.exports = require('./ical')
+module.exports = require('./ical');
 
-var node = require('./node-ical')
+const node = require('./node-ical');
 
 // Copy node functions across to exports
-for (var i in node){
-  module.exports[i] = node[i]
-}  
+for (const i in node) {
+    module.exports[i] = node[i];
+}
