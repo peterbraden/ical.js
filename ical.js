@@ -304,7 +304,7 @@ module.exports = {
                             // If we have the same UID as an existing record, and it *isn't* a specific recurrence ID,
                             // not quite sure what the correct behaviour should be.  For now, just take the new information
                             // and merge it with the old record by overwriting only the fields that appear in the new record.
-                            let key; // WARNING key is already defined
+                            let key;
                             for (key in curr) {
                                 par[curr.uid][key] = curr[key];
                             }
@@ -329,7 +329,7 @@ module.exports = {
                         // would end up with a shared reference that would cause us to overwrite *both* records at the point
                         // that we try and fix up the parent record.)
                         const recurrenceObj = new Object();
-                        let key; // WARNING key is already defined
+                        let key;
                         for (key in curr) {
                             recurrenceObj[key] = curr[key];
                         }
