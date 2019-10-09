@@ -1,6 +1,7 @@
 module.exports = {
     'env': {
         'commonjs': true,
+        'es6': true,
         'node': true
     },
     'globals': {
@@ -9,11 +10,12 @@ module.exports = {
         'Promise': 'readonly'
     },
     'parserOptions': {
-        'ecmaVersion': 2015
+        'ecmaVersion': 2018
     },
-    'extends': ['eslint:recommended', 'prettier', 'plugin:es5/no-es2015'],
-    'plugins': ['prettier', 'es5'],
+    'extends': ['eslint:recommended', 'prettier'],
+    'plugins': ['prettier'],
     'rules': {
-        'prettier/prettier': ['error']
+        'prettier/prettier': ['error'],
+        'no-var': 'error', 'prefer-const': 'warn'
     }
 };

@@ -1,7 +1,7 @@
-var request = require('request');
-var fs = require('fs');
+const request = require('request');
+const fs = require('fs');
 
-var ical = require('./ical.js');
+const ical = require('./ical.js');
 
 /**
  * iCal event object.
@@ -63,27 +63,25 @@ var ical = require('./ical.js');
 
 // utility to allow callbacks to be used for promises
 function promiseCallback(fn, cb) {
-    var promise = new Promise(fn);
+    const promise = new Promise(fn);
     if (!cb) {
         return promise;
-    } else {
-        promise
-            .then(function(ret) {
-                cb(null, ret);
-            })
-            .catch(function(err) {
-                cb(err, null);
-            });
-        return;
     }
+    promise
+        .then(function(ret) {
+            cb(null, ret);
+        })
+        .catch(function(err) {
+            cb(err, null);
+        });
 }
 
 // sync functions
-var sync = {};
+const sync = {};
 // async functions
-var async = {};
+const async = {};
 // auto-detect functions for backwards compatibility.
-var autodetect = {};
+const autodetect = {};
 
 /**
  * Download an iCal file from the web and parse it.
@@ -107,7 +105,7 @@ async.fromURL = function(url, opts, cb) {
             // if (r.statusCode !== 200) {
             // all ok status codes should be accepted (any 2XX code)
             if (Math.floor(res.statusCode / 100) !== 2) {
-                reject(new Error(res.statusCode + ' ' + res.statusMessage));
+                reject(new Error(`${res.statusCode} ${res.statusMessage}`));
                 return;
             }
             ical.parseICS(data, function(err, ics) {
@@ -177,7 +175,7 @@ async.parseICS = function(data, cb) {
  * @returns {iCalData} Parsed iCal data.
  */
 sync.parseFile = function(filename) {
-    var data = fs.readFileSync(filename, 'utf8');
+    const data = fs.readFileSync(filename, 'utf8');
     return ical.parseICS(data);
 };
 
@@ -203,10 +201,8 @@ sync.parseICS = function(data) {
  */
 autodetect.parseFile = function(filename, cb) {
     if (!cb) return sync.parseFile(filename);
-    else {
-        async.parseFile(filename, cb);
-        return;
-    }
+
+    async.parseFile(filename, cb);
 };
 
 /**
@@ -220,10 +216,8 @@ autodetect.parseFile = function(filename, cb) {
  */
 autodetect.parseICS = function(data, cb) {
     if (!cb) return sync.parseICS(data);
-    else {
-        async.parseICS(data, cb);
-        return;
-    }
+
+    async.parseICS(data, cb);
 };
 
 // export api functions
@@ -233,9 +227,9 @@ module.exports = {
     parseFile: autodetect.parseFile,
     parseICS: autodetect.parseICS,
     // sync
-    sync: sync,
+    sync,
     // async
-    async: async,
+    async,
     // other backwards compat things
     objectHandlers: ical.objectHandlers,
     handleObject: ical.handleObject,

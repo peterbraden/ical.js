@@ -1,14 +1,14 @@
-/****
+/** **
  * Tests
  *
  *
- ***/
+ ** */
 process.env.TZ = 'America/San_Francisco';
-var ical = require('../index');
 
-var vows = require('vows'),
-    assert = require('assert'),
-    _ = require('underscore');
+const vows = require('vows');
+const assert = require('assert');
+const _ = require('underscore');
+const ical = require('../index');
 
 vows.describe('node-ical')
     .addBatch({
@@ -18,7 +18,7 @@ vows.describe('node-ical')
             },
 
             'we get 9 events': function(topic) {
-                var events = _.select(_.values(topic), function(x) {
+                const events = _.select(_.values(topic), function(x) {
                     return x.type === 'VEVENT';
                 });
                 assert.equal(events.length, 9);
@@ -134,7 +134,7 @@ vows.describe('node-ical')
                     })[0];
                 },
                 'tzid offset correctly applied': function(event) {
-                    var start = new Date('2002-10-28T22:00:00.000Z');
+                    const start = new Date('2002-10-28T22:00:00.000Z');
                     assert.equal(event.start.valueOf(), start.valueOf());
                 },
             },
@@ -185,7 +185,7 @@ vows.describe('node-ical')
                 },
 
                 'has a description': function(topic) {
-                    var desired =
+                    const desired =
                         'John Doe is in South San Francisco, CA from Oct 11 ' +
                         'to Oct 13, 2011\nView and/or edit details in TripIt : http://www.tripit.c' +
                         'om/trip/show/id/23710889\nTripIt - organize your travel at http://www.trip' +
@@ -256,7 +256,7 @@ vows.describe('node-ical')
             },
             'recurring yearly event (14 july)': {
                 'topic': function(events) {
-                    var ev = _.values(events)[0];
+                    const ev = _.values(events)[0];
                     return ev.rrule.between(new Date(2013, 0, 1), new Date(2014, 0, 1));
                 },
                 'dt start well set': function(topic) {
@@ -296,7 +296,7 @@ vows.describe('node-ical')
                 return ical.parseFile('./test10.ics');
             },
             'grabbing custom properties': {
-                topic: function(topic) {},
+                topic(topic) {},
             },
         },
 
