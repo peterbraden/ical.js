@@ -409,10 +409,24 @@
       return storeParam(name.toLowerCase())(val, params, ctx);
     },
 
+		getLineBreakChar: function (string) {
+			const indexOfLF = string.indexOf('\n', 1);  // No need to check first-character
+
+			if (indexOfLF === -1) {
+				if (string.indexOf('\r') !== -1) return '\r';
+
+				return '\n';
+			}
+
+			if (string[indexOfLF - 1] === '\r') return '\r?\n';
+
+			return '\n';
+		},
 
     parseICS : function(str){
       var self = this
-      var lines = str.split(/\r?\n/)
+			var line_end_type = self.getLineBreakChar(str)
+      var lines = str.split(line_end_type=='\n'?/\n/:/\r?\n/)
       var ctx = {}
       var stack = []
 
