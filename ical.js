@@ -109,6 +109,7 @@ const dateParam = function(name) {
                 newDate = new Date(comps[1], parseInt(comps[2], 10) - 1, comps[3]);
 
                 newDate = addTZ(newDate, params);
+                newDate.dateOnly = true;
 
                 // Store as string - worst case scenario
                 return storeValParam(name)(newDate, curr);
