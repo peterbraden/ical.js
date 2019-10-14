@@ -23,13 +23,20 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "vows": "0.8.2",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-prettier": "^3.1.1",
+    "prettier": "^1.18.2",
     "underscore": "1.9.1",
-    "request": "^2.88.0",
-    "rrule": "^2.5.6",
-    "uuid": "^3.3.2"
+    "vows": "^0.8.2"
   },
   "scripts": {
-    "test": "./node_modules/vows/bin/vows ./test/test.js && ./node_modules/vows/bin/vows ./test/testAsync.js"
+    "test": "vows test/test.js && vows test/testAsync.js && printf \"\\n\"",
+    "lint": "eslint *.js test/*.js",
+    "fix": "eslint --fix *.js test/*.js",
+    "format-check": "prettier --config .prettierrc.js --check *.js test/*.js",
+    "format": "prettier --config .prettierrc.js --write *.js test/*.js",
+    "precommit": "npm run format && npm run fix"
   }
 }
