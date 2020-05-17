@@ -1,28 +1,44 @@
 {
-  "name": "ical",
-  "version": "0.8.0",
+  "name": "node-ical",
+  "version": "0.11.0",
   "main": "index.js",
-  "description": "A tolerant, minimal icalendar parser",
+  "types": "node-ical.d.ts",
+  "description": "A minimal icalendar/ics parser for nodejs",
   "keywords": [
     "ical",
     "ics",
-    "calendar"
+    "calendar",
+    "nodejs"
   ],
-  "homepage": "https://github.com/peterbraden/ical.js",
-  "author": "Peter Braden <peterbraden@peterbraden.co.uk> (peterbraden.co.uk)",
+  "homepage": "https://github.com/jens-maus/node-ical",
+  "author": "Jens Maus <mail@jens-maus.de>",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git://github.com/peterbraden/ical.js.git"
+    "url": "git://github.com/jens-maus/node-ical.git"
   },
   "dependencies": {
-    "rrule": "2.4.1"
+    "moment-timezone": "^0.5.23",
+    "request": "^2.88.0",
+    "rrule": "^2.5.6",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "vows": "0.8.2",
-    "underscore": "1.9.1"
+    "@types/request": "^2.48.3",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-prettier": "^3.1.1",
+    "prettier": "^1.18.2",
+    "underscore": "1.9.1",
+    "vows": "^0.8.2"
   },
   "scripts": {
-    "test": "./node_modules/vows/bin/vows ./test/test.js"
+    "test": "vows test/test.js && vows test/testAsync.js && printf \"\\n\"",
+    "lint": "eslint *.js test/*.js",
+    "fix": "eslint --fix *.js test/*.js",
+    "format-check": "prettier --config .prettierrc.js --check *.js test/*.js",
+    "format": "prettier --config .prettierrc.js --write *.js test/*.js",
+    "precommit": "npm run format && npm run fix"
   }
 }
