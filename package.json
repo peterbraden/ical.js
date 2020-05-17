@@ -1,6 +1,6 @@
 {
   "name": "node-ical",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "main": "index.js",
   "types": "node-ical.d.ts",
   "description": "A minimal icalendar/ics parser for nodejs",
