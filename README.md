@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/jens-maus/node-ical.png)](https://travis-ci.org/jens-maus/node-ical)
 [![NPM version](http://img.shields.io/npm/v/node-ical.svg)](https://www.npmjs.com/package/node-ical)
 [![Downloads](https://img.shields.io/npm/dm/node-ical.svg)](https://www.npmjs.com/package/node-ical)
+[![Known Vulnerabilities](https://snyk.io/test/github/jens-maus/node-ical/badge.svg?targetFile=package.json)](https://snyk.io/test/github/jens-maus/node-ical?targetFile=package.json)
 
 [![NPM](https://nodei.co/npm/node-ical.png?downloads=true)](https://nodei.co/npm/node-ical/)
 
