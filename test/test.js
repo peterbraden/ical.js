@@ -198,7 +198,9 @@ vows.describe('node-ical').addBatch({
       }
       , 'has a start' : function(topic){
         assert.equal(topic.start.tz, 'America/Phoenix')
-        assert.equal(topic.start.toISOString(), new Date(2011, 10, 09, 19, 0,0).toISOString())
+        // 20111109T190000 in America/Phoenix maps to 20111010T020000 in UTC
+        // https://www.timeanddate.com/worldclock/converter.html?iso=20111010T020000&p1=197&p2=1440
+        assert.equal(topic.start.toISOString(), new Date(2011, 10, 10, 02, 0,0).toISOString())
       }
     }
   }
@@ -255,7 +257,9 @@ vows.describe('node-ical').addBatch({
         },
         'task completed': function(task){
             assert.equal(task.completion, 100);
-            assert.equal(task.completed.toISOString(), new Date(2013, 06, 16, 10, 57, 45).toISOString());
+            // 20130716T105745 in Europe/Monaco maps to 20130716T085745 in UTC
+            // https://www.timeanddate.com/worldclock/converter.html?iso=20130716T085700&p1=674&p2=1440
+            assert.equal(task.completed.toISOString(), new Date(2013, 06, 16, 08, 57, 45).toISOString());
         }
     }
   }
@@ -278,7 +282,7 @@ vows.describe('node-ical').addBatch({
       },
       'grabbing custom properties': {
           topic: function(topic) {
-              
+
           }
       }
   },
@@ -491,10 +495,14 @@ vows.describe('node-ical').addBatch({
        })[0];
      }
      , 'has a start' : function(topic){
-       assert.equal(topic.start.tz, "(UTC+07:00) Bangkok, Hanoi, Jakarta")
-       assert.equal(topic.start.toISOString(), new Date(2019, 3, 30, 9, 0, 0).toISOString())
-       assert.equal(topic.end.tz, "(UTC+07:00) Bangkok, Hanoi, Jakarta")
-       assert.equal(topic.end.toISOString(), new Date(2019, 3, 30, 12, 0, 0).toISOString())
+       assert.equal(topic.start.tz, "Asia/Jakarta")
+       // 20190430T090000 in Asia/Jakarta maps to 20190430T020000 in UTC
+       // https://www.timeanddate.com/worldclock/converter.html?iso=20190430T020000&p1=1440&p2=108
+       assert.equal(topic.start.toISOString(), new Date(2019, 3, 30, 2, 0, 0).toISOString())
+       assert.equal(topic.end.tz, "Asia/Jakarta")
+       // 20190430T120000 in Asia/Jakarta maps to 20190430T050000 in UTC
+       // https://www.timeanddate.com/worldclock/converter.html?iso=20190430T050000&p1=1440&p2=108
+       assert.equal(topic.end.toISOString(), new Date(2019, 3, 30, 5, 0, 0).toISOString())
      }
    }
  }
