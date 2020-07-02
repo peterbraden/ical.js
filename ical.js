@@ -17,6 +17,8 @@
 
 }('ical', function(){
 
+  var momentTz = require('moment-timezone');
+
    // Unescape Text re RFC 4.3.11
   var text = function(t){
     t = t || "";
@@ -141,16 +143,23 @@
             parseInt(comps[5], 10),
             parseInt(comps[6], 10 )
           ));
-          // TODO add tz
         } else {
-          newDate = new Date(
-            parseInt(comps[1], 10),
-            parseInt(comps[2], 10)-1,
-            parseInt(comps[3], 10),
-            parseInt(comps[4], 10),
-            parseInt(comps[5], 10),
-            parseInt(comps[6], 10)
-          );
+          var p = parseParams(params);
+          if (p && p.TZID) {
+            // If timezone is specified, the value corresponds to time local to the timezone.
+            // So, timezone needs to be factored in before converting to UTC
+            // Ref: #3 option in https://www.kanzaki.com/docs/ical/dateTime.html
+            newDate = momentTz.tz(val, p.TZID).utc().toDate();
+          } else {
+            newDate = new Date(
+              parseInt(comps[1], 10),
+              parseInt(comps[2], 10)-1,
+              parseInt(comps[3], 10),
+              parseInt(comps[4], 10),
+              parseInt(comps[5], 10),
+              parseInt(comps[6], 10)
+            );
+          }
         }
 
         newDate = addTZ(newDate, params);
