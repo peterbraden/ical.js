@@ -543,7 +543,9 @@
           l += lines[i+1].slice(1)
           i += 1
         }
-
+        // remove any double quotes in any tzid statement
+        if(l.indexOf("TZID="))
+          l=l.replace(/"/g,"")
         // Split on semicolons except if the semicolon is surrounded by quotes
         var kv = l.split(/:(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/g)
 
