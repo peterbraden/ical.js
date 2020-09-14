@@ -16,14 +16,17 @@
     "url": "git://github.com/peterbraden/ical.js.git"
   },
   "dependencies": {
+    "moment-timezone": "^0.5.31",
     "request": "^2.88.0",
-    "rrule": "2.4.1"
+    "rrule": "2.4.1",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "vows": "0.8.2",
     "underscore": "1.9.1"
   },
   "scripts": {
-    "test": "./node_modules/vows/bin/vows ./test/test.js"
+    "test": "./node_modules/vows/bin/vows ./test/test.js",
+    "postinstall": "./postinstall"
   }
 }
