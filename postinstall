@@ -1,0 +1,5 @@
+#!/bin/bash
+fn=windowsZones.xml
+curl -sL https://raw.githubusercontent.com/unicode-org/cldr/master/common/supplemental/$fn >$fn
+node node_modules/xml-js/bin/cli.js $fn >$(basename $fn .xml).json
+rm $fn

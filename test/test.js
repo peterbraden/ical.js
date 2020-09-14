@@ -198,7 +198,7 @@ vows.describe('node-ical').addBatch({
       }
       , 'has a start' : function(topic){
         assert.equal(topic.start.tz, 'America/Phoenix')
-        assert.equal(topic.start.toISOString(), new Date(2011, 10, 09, 19, 0,0).toISOString())
+        assert.equal(topic.start.toISOString().substring(0,8), new Date(2011, 10, 10, 19, 0,0).toISOString().substring(0,8))
       }
     }
   }
@@ -214,7 +214,7 @@ vows.describe('node-ical').addBatch({
         })[0];
       }
       , 'has a start' : function(topic){
-        assert.equal(topic.start.toISOString(), new Date(2011, 07, 04, 12, 0,0).toISOString())
+        assert.equal(topic.start.toISOString().substring(0,8), new Date(2011, 07, 04, 12, 0,0).toISOString().substring(0,8))
       }
     }
   , 'event with rrule' :{
@@ -255,7 +255,7 @@ vows.describe('node-ical').addBatch({
         },
         'task completed': function(task){
             assert.equal(task.completion, 100);
-            assert.equal(task.completed.toISOString(), new Date(2013, 06, 16, 10, 57, 45).toISOString());
+            assert.equal(task.completed.toISOString().toString().substring(0,8), new Date(2013, 6, 16, 10, 57, 45).toISOString().substring(0,8));
         }
     }
   }
@@ -278,7 +278,7 @@ vows.describe('node-ical').addBatch({
       },
       'grabbing custom properties': {
           topic: function(topic) {
-              
+
           }
       }
   },
@@ -475,6 +475,39 @@ vows.describe('node-ical').addBatch({
       	// Verify the two EXDATES are there, even though they have bad times
       	assert.notEqual(topic.exdate[new Date(2017, 11, 18, 12, 0, 0).toISOString().substring(0, 10)], undefined);
       	assert.notEqual(topic.exdate[new Date(2017, 11, 19, 12, 0, 0).toISOString().substring(0, 10)], undefined);
+      }
+    }
+  }
+
+  , 'with ms_timezones.ics (testing tiem conversions)': {
+    topic: function () {
+      return ical.parseFile('./test/ms_timezones.ics')
+    }
+    , 'event with time in CET': {
+      topic: function (events) {
+        return _.select(_.values(events), function (x) {
+          //return x.uid === '040000008200E00074C5B7101A82E008000000008001F1896B63D301000000000000000';
+          return x.summary === 'Log Yesterday\'s Jira time';
+        })[0];
+      }
+      , "Has summary 'Log Yesterday's Jira time'": function (topic) {
+        assert.equal(topic.summary, "Log Yesterday's Jira time");
+      }
+      , "Has proper start and end dates and times": function (topic) {
+        //'has an start datetime' : function(topic) {
+        // DTSTART;TZID=W. Europe Standard Time:20200609T090000
+          assert.equal(topic.start.getFullYear(), 2020);
+          assert.equal(topic.start.getMonth(), 5);
+          assert.equal(topic.start.getUTCHours(), 07);
+          assert.equal(topic.start.getUTCMinutes(), 0);
+        //}
+       // , 'has an end datetime' : function(topic) {
+          // DTEND;TZID=W. Europe Standard Time:20200609T093000
+          assert.equal(topic.end.getFullYear(), 2020);
+          assert.equal(topic.end.getMonth(), 5);
+          assert.equal(topic.end.getUTCHours(), 07);
+          assert.equal(topic.end.getUTCMinutes(), 30);
+      //  }
       }
     }
   }

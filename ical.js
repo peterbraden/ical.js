@@ -16,7 +16,7 @@
   }
 
 }('ical', function(){
-
+  const moment=require('moment-timezone')
    // Unescape Text re RFC 4.3.11
   var text = function(t){
     t = t || "";
@@ -90,71 +90,178 @@
     var p = parseParams(params);
 
     if (params && p){
+      //console.log("tz="+dt.tz+" TZID="+p.TZID)
       dt.tz = p.TZID
+      if (dt.tz !== undefined)
+      {
+        // Remove surrouding quotes if found at the begining and at the end of the string
+        // (Occurs when parsing Microsoft Exchange events containing TZID with Windows standard format instead IANA)
+        dt.tz = dt.tz.replace(/^"(.*)"$/, "$1")
+      }
     }
-
     return dt
   }
 
-  var dateParam = function(name){
-      return function (val, params, curr) {
+  let zoneTable=null
+  // Lookup IANA tz name from MS Names list
+  // if hash table  not loaded,  load it
+  function getIanaTZFromMS(msTZName){
+    if(!zoneTable){
+      const fs=require('fs')
+      const wtz=JSON.parse(fs.readFileSync(__dirname+"/windowsZones.json"))
+      // get trhe list of MapZone objects
+      let v = getObjects(wtz,'name','mapZone')
+      // initializze the hash
+      zoneTable={}
+      // loop thru MS zones
+      for(let zone of v){
+        // get the object based on zone name
+        let wzone=zoneTable[zone.attributes.other]
+        // if not set
+        if(wzone==null)
+          // initialize
+          wzone={iana:[], type:zone.attributes.territory }
+        // loop thru the IANA names on this zone
+        for(let iana of zone.attributes.type.split(' ')){
+          // watch out for dups
+          if(wzone.iana.indexOf(iana)==-1)
+            // add to list
+            wzone.iana.push(iana)
+        }
+        // save the list
+        zoneTable[zone.attributes.other]=wzone
+      }
+      // fix for incomplete IANA timezone list. WEST shifts +1(winter) to +0 (summer)
+      //zoneTable['W. Europe Standard Time'].iana.unshift("Europe/London")
+    }
+    return zoneTable[msTZName].iana[0]
+    //return (msTZName =='W. Europe Standard Time')?"Europe/London":"America/Los_Angeles";
+  }
 
-      var newDate = text(val);
+  function getObjects(obj, key, val) {
+    var objects = [];
+    for (var i in obj) {
+        if (!obj.hasOwnProperty(i)) continue;
+        if (typeof obj[i] == 'object') {
+            objects = objects.concat(getObjects(obj[i], key, val));
+        } else
+        //if key matches and value matches or if key matches and value is not passed (eliminating the case where key matches but passed value does not)
+        if (i == key && obj[i] == val || i == key && val == '') { //
+            objects.push(obj);
+        } else if (obj[i] == val && key == ''){
+            //only add if the object is not already in the array
+            if (objects.lastIndexOf(obj) == -1){
+                objects.push(obj);
+            }
+        }
+    }
+    return objects;
+  }
 
+  const dateParam = function (name) {
+    return function (val, params, curr) {
+      let newDate = text(val);
 
-      if (params && params[0] === "VALUE=DATE") {
-        // Just Date
-
-        var comps = /^(\d{4})(\d{2})(\d{2})$/.exec(val);
+      if (params && params.indexOf('VALUE=DATE') > -1 && params.indexOf('VALUE=DATE-TIME') === -1) {
+              // Just Date
+        // console.log(" date string="+val)
+        const comps = /^(\d{4})(\d{2})(\d{2}).*$/.exec(val);
         if (comps !== null) {
           // No TZ info - assume same timezone as this computer
-          newDate = new Date(
-            comps[1],
-            parseInt(comps[2], 10)-1,
-            comps[3]
-          );
+          newDate = new Date(comps[1], parseInt(comps[2], 10) - 1, comps[3]);
 
           newDate = addTZ(newDate, params);
           newDate.dateOnly = true;
 
           // Store as string - worst case scenario
-          return storeValParam(name)(newDate, curr)
+          return storeValParam(name)(newDate, curr);
         }
       }
 
-
-      //typical RFC date-time format
-      var comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/.exec(val);
+          // Typical RFC date-time format
+      const comps = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/.exec(val);
       if (comps !== null) {
-        if (comps[7] == 'Z'){ // GMT
-          newDate = new Date(Date.UTC(
-            parseInt(comps[1], 10),
-            parseInt(comps[2], 10)-1,
-            parseInt(comps[3], 10),
-            parseInt(comps[4], 10),
-            parseInt(comps[5], 10),
-            parseInt(comps[6], 10 )
-          ));
-          // TODO add tz
-        } else {
+        // if timezone is Z == UTC
+        if (comps[7] === 'Z') {
+          // GMT
           newDate = new Date(
-            parseInt(comps[1], 10),
-            parseInt(comps[2], 10)-1,
-            parseInt(comps[3], 10),
-            parseInt(comps[4], 10),
-            parseInt(comps[5], 10),
-            parseInt(comps[6], 10)
-          );
+                      Date.UTC(
+                          parseInt(comps[1], 10),
+                          parseInt(comps[2], 10) - 1,
+                          parseInt(comps[3], 10),
+                          parseInt(comps[4], 10),
+                          parseInt(comps[5], 10),
+                          parseInt(comps[6], 10)
+                      )
+                  );
+        // add timezone if supplied
+        } else if (params && params[0] && params[0].indexOf('TZID=') > -1 && params[0].split('=')[1]) {
+          let tz = params[0].split('=')[1];
+          let found = '';
+          let offset = '';
+          // Remove quotes if found
+          tz = tz.replace(/^"(.*)"$/, '$1');
+          // Watch out for offset timezones
+          if (tz && tz.startsWith('(')) {
+            // Extract just the offset
+            const regex = /[+|-]\d*:\d*/;
+            offset = tz.match(regex);
+            tz = '';
+            found = offset;
+          }
+          // Watch out for windows timeszones, contain spaces
+          if (tz && !tz.startsWith('(') && tz.indexOf(' ') > -1) {
+            // get the IANA timezone needed for moment
+            const tz1 = getIanaTZFromMS(tz);
+            // if IANA tz found
+            if (tz1) {
+              // set
+              tz = tz1;
+              found = tz;
+            }
+          }
+          // if not previously validated IANA tz
+          if (found === '') {
+            // make sure in moment table
+            found = moment.tz.names().filter(zone => {
+              return zone === tz;
+            })[0];
+          }
+          // if IANA tz validated
+          if (found) {
+            newDate = moment.tz(val, 'YYYYMMDDTHHmmss' + offset, tz).toDate();
+          } else {
+            // Fallback if tz not found
+            // this will be local number, but 'assumed to be UTC'
+            newDate = new Date(
+                          parseInt(comps[1], 10),
+                          parseInt(comps[2], 10) - 1,
+                          parseInt(comps[3], 10),
+                          parseInt(comps[4], 10),
+                          parseInt(comps[5], 10),
+                          parseInt(comps[6], 10)
+                      );
+          }
+        } else {
+          // no tz supplied, so
+          // this will be local number, but 'assumed to be UTC'
+          newDate = new Date(
+                      parseInt(comps[1], 10),
+                      parseInt(comps[2], 10) - 1,
+                      parseInt(comps[3], 10),
+                      parseInt(comps[4], 10),
+                      parseInt(comps[5], 10),
+                      parseInt(comps[6], 10)
+                  );
         }
-
+        // add to date
         newDate = addTZ(newDate, params);
-    }
-
+      }
 
           // Store as string - worst case scenario
-      return storeValParam(name)(newDate, curr)
-      }
-  }
+      return storeValParam(name)(newDate, curr);
+    };
+  };
 
 
   var geoParam = function(name){
@@ -437,7 +544,8 @@
           i += 1
         }
 
-        var kv = l.split(":")
+        // Split on semicolons except if the semicolon is surrounded by quotes
+        var kv = l.split(/:(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/g)
 
         if (kv.length < 2){
           // Invalid line - must have k&v
