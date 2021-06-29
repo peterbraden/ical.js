@@ -19,7 +19,7 @@
     "rrule": "2.6.8"
   },
   "devDependencies": {
-    "vows": "0.8.2",
+    "vows": "0.8.3",
     "underscore": "1.13.1"
   },
   "scripts": {
