@@ -289,7 +289,7 @@
 
         var par = stack.pop()
 
-        if (curr.uid)
+        if (curr.uid && typeof curr.uid === 'string')
         {
         	// If this is the first time we run into this UID, just save it.
         	if (par[curr.uid] === undefined)
