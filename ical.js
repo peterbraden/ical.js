@@ -288,7 +288,8 @@
         }
 
         var par = stack.pop()
-
+        
+        // @deprecated, nodes will be stored in the lowercased `type` array
         if (curr.uid)
         {
         	// If this is the first time we run into this UID, just save it.
@@ -372,7 +373,13 @@
         }
         else
           par[Math.random()*100000] = curr  // Randomly assign ID : TODO - use true GUID
-
+        // <
+        
+        var type = curr.type.toLowerCase();
+        if (par[type] == null)
+          par[type] = [];
+        
+        par[type].push(curr);
         return par
       }
 
