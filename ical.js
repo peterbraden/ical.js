@@ -207,7 +207,7 @@
       curr[name] = curr[name] || [];
       var dates = val ? val.split(separatorPattern) : [];
       dates.forEach(function (entry) {
-          var exdate = new Array();
+          var exdate = new Object();
           dateParam(name)(entry, params, exdate);
 
           if (exdate[name])
@@ -349,7 +349,7 @@
 
 				// If we don't have an array to store recurrences in yet, create it.
         		if (par[curr.uid].recurrences === undefined) {
-        			par[curr.uid].recurrences = new Array();
+        			par[curr.uid].recurrences = new Object();
             	}
 
         		// Save off our cloned recurrence object into the array, keyed by date but not time.
